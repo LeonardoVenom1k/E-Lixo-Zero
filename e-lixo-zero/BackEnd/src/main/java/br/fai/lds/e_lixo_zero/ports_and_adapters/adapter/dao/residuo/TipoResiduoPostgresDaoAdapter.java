@@ -2,56 +2,108 @@ package br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.residuo;
 
 import br.fai.lds.e_lixo_zero.domain.TipoResiduoModel;
 import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.residuo.TipoResiduoDao;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TipoResiduoPostgresDaoAdapter implements TipoResiduoDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final Connection connection;
 
-    public TipoResiduoPostgresDaoAdapter(final DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public TipoResiduoPostgresDaoAdapter(final Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public int add(final TipoResiduoModel entity) {
         final String sql = "INSERT INTO tipos_residuos (nome, categoria, descricao, ativo) VALUES (?, ?, ?, ?)";
-        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, entity.getNome());
+            preparedStatement.setString(2, entity.getCategoria());
+            preparedStatement.setString(3, entity.getDescricao());
+            preparedStatement.setBoolean(4, entity.isAtivo());
+            preparedStatement.executeUpdate();
 
-        jdbcTemplate.update(connection -> {
-            final PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, entity.getNome());
-            ps.setString(2, entity.getCategoria());
-            ps.setString(3, entity.getDescricao());
-            ps.setBoolean(4, entity.isAtivo());
-            return ps;
-        }, keyHolder);
-
-        final Number key = keyHolder.getKey();
-        return key != null ? key.intValue() : 0;
+            final ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            int id = 0;
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.commit();
+            return id;
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void remove(final int id) {
-        jdbcTemplate.update("DELETE FROM tipos_residuos WHERE id_residuo = ?", id);
+        final String sql = "DELETE FROM tipos_residuos WHERE id_residuo = ?";
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public TipoResiduoModel readyById(final int id) {
-        final List<TipoResiduoModel> result = jdbcTemplate.query("SELECT * FROM tipos_residuos WHERE id_residuo = ?", getRowMapper(), id);
-        return result.isEmpty() ? null : result.get(0);
+        final String sql = "SELECT * FROM tipos_residuos WHERE id_residuo = ?";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            TipoResiduoModel residuo = null;
+            if (resultSet.next()) {
+                residuo = mapResiduo(resultSet);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return residuo;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<TipoResiduoModel> readAll() {
-        return jdbcTemplate.query("SELECT * FROM tipos_residuos WHERE ativo = true", getRowMapper());
+        final String sql = "SELECT * FROM tipos_residuos WHERE ativo = true";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            final List<TipoResiduoModel> residuos = new ArrayList<>();
+            while (resultSet.next()) {
+                residuos.add(mapResiduo(resultSet));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return residuos;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -59,25 +111,54 @@ public class TipoResiduoPostgresDaoAdapter implements TipoResiduoDao {
         if (nome == null || nome.isBlank()) {
             return null;
         }
-        final List<TipoResiduoModel> result = jdbcTemplate.query("SELECT * FROM tipos_residuos WHERE LOWER(nome) = LOWER(?)", getRowMapper(), nome.trim());
-        return result.isEmpty() ? null : result.get(0);
+        final String sql = "SELECT * FROM tipos_residuos WHERE LOWER(nome) = LOWER(?)";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, nome.trim());
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            TipoResiduoModel residuo = null;
+            if (resultSet.next()) {
+                residuo = mapResiduo(resultSet);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return residuo;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void updateInformation(final int id, final TipoResiduoModel entity) {
         final String sql = "UPDATE tipos_residuos SET nome = ?, categoria = ?, descricao = ?, ativo = ? WHERE id_residuo = ?";
-        jdbcTemplate.update(sql, entity.getNome(), entity.getCategoria(), entity.getDescricao(), entity.isAtivo(), id);
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, entity.getNome());
+            preparedStatement.setString(2, entity.getCategoria());
+            preparedStatement.setString(3, entity.getDescricao());
+            preparedStatement.setBoolean(4, entity.isAtivo());
+            preparedStatement.setInt(5, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
-    private RowMapper<TipoResiduoModel> getRowMapper() {
-        return (rs, rowNum) -> {
-            final TipoResiduoModel residuo = new TipoResiduoModel();
-            residuo.setId(rs.getInt("id_residuo"));
-            residuo.setNome(rs.getString("nome"));
-            residuo.setCategoria(rs.getString("categoria"));
-            residuo.setDescricao(rs.getString("descricao"));
-            residuo.setAtivo(rs.getBoolean("ativo"));
-            return residuo;
-        };
+    private TipoResiduoModel mapResiduo(final ResultSet resultSet) throws SQLException {
+        final TipoResiduoModel residuo = new TipoResiduoModel();
+        residuo.setId(resultSet.getInt("id_residuo"));
+        residuo.setNome(resultSet.getString("nome"));
+        residuo.setCategoria(resultSet.getString("categoria"));
+        residuo.setDescricao(resultSet.getString("descricao"));
+        residuo.setAtivo(resultSet.getBoolean("ativo"));
+        return residuo;
     }
 }

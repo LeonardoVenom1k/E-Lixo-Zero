@@ -1,6 +1,6 @@
 package br.fai.lds.e_lixo_zero.domain;
 
-public class UsuarioModel {
+public class UserModel {
 
     private int id;
     private String nomeCompleto;

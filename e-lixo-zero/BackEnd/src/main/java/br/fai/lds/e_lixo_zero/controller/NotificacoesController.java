@@ -1,7 +1,7 @@
 package br.fai.lds.e_lixo_zero.controller;
 
 import br.fai.lds.e_lixo_zero.domain.NotificacaoModel;
-import br.fai.lds.e_lixo_zero.domain.UsuarioModel;
+import br.fai.lds.e_lixo_zero.domain.UserModel;
 import br.fai.lds.e_lixo_zero.exceptions.ResourceNotFoundException;
 import br.fai.lds.e_lixo_zero.exceptions.UnauthorizedException;
 import br.fai.lds.e_lixo_zero.ports_and_adapters.port.service.notificacao.NotificacaoService;
@@ -26,7 +26,7 @@ public class NotificacoesController {
 
     @GetMapping
     public ResponseEntity<List<NotificacaoModel>> getAll(final HttpServletRequest request) {
-        final UsuarioModel usuario = getUsuario(request);
+        final UserModel usuario = getUsuario(request);
         return ResponseEntity.ok(notificacaoService.findByUsuarioId(usuario.getId()));
     }
 
@@ -70,12 +70,12 @@ public class NotificacoesController {
         return ResponseEntity.noContent().build();
     }
 
-    private UsuarioModel getUsuario(final HttpServletRequest request) {
+    private UserModel getUsuario(final HttpServletRequest request) {
         final String email = (String) request.getAttribute("email");
         if (email == null || email.isBlank()) {
             throw new UnauthorizedException("Usuário não autenticado");
         }
-        final UsuarioModel usuario = usuarioService.findByEmail(email);
+        final UserModel usuario = usuarioService.findByEmail(email);
         if (usuario == null) {
             throw new UnauthorizedException("Usuário não encontrado");
         }

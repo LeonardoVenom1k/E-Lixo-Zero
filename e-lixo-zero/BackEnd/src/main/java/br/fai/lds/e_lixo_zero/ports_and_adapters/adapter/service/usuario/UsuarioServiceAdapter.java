@@ -1,7 +1,7 @@
 package br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.service.usuario;
 
-import br.fai.lds.e_lixo_zero.domain.UsuarioModel;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.usuario.UsuarioDao;
+import br.fai.lds.e_lixo_zero.domain.UserModel;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.usuario.UserDao;
 import br.fai.lds.e_lixo_zero.ports_and_adapters.port.service.usuario.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,44 +13,44 @@ import java.util.List;
 public class UsuarioServiceAdapter implements UsuarioService {
 
     @Autowired
-    private UsuarioDao usuarioDao;
+    private UserDao userDao;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
-    public int create(final UsuarioModel usuarioModel) {
-        if (usuarioModel == null) {
+    public int create(final UserModel userModel) {
+        if (userModel == null) {
             return 0;
         }
-        if (isInvalidString(usuarioModel.getNomeCompleto())) {
+        if (isInvalidString(userModel.getNomeCompleto())) {
             return 0;
         }
-        if (isInvalidEmail(usuarioModel.getEmail())) {
+        if (isInvalidEmail(userModel.getEmail())) {
             return 0;
         }
-        if (isInvalidString(usuarioModel.getSenha())) {
+        if (isInvalidString(userModel.getSenha())) {
             return 0;
         }
-        if (findByEmail(usuarioModel.getEmail()) != null) {
+        if (findByEmail(userModel.getEmail()) != null) {
             return 0;
         }
 
-        setDefaults(usuarioModel);
-        usuarioModel.setSenha(passwordEncoder.encode(usuarioModel.getSenha()));
-        return usuarioDao.add(usuarioModel);
+        setDefaults(userModel);
+        userModel.setSenha(passwordEncoder.encode(userModel.getSenha()));
+        return userDao.add(userModel);
     }
 
-    private void setDefaults(final UsuarioModel usuarioModel) {
-        if (isInvalidString(usuarioModel.getCidade())) {
-            usuarioModel.setCidade("Santa Rita do Sapucaí");
+    private void setDefaults(final UserModel userModel) {
+        if (isInvalidString(userModel.getCidade())) {
+            userModel.setCidade("Santa Rita do Sapucaí");
         }
-        if (isInvalidString(usuarioModel.getEstado())) {
-            usuarioModel.setEstado("MG");
+        if (isInvalidString(userModel.getEstado())) {
+            userModel.setEstado("MG");
         }
-        if (isInvalidString(usuarioModel.getTipoUsuario())) {
-            usuarioModel.setTipoUsuario("CIDADAO");
+        if (isInvalidString(userModel.getTipoUsuario())) {
+            userModel.setTipoUsuario("CIDADAO");
         }
-        usuarioModel.setAtivo(true);
+        userModel.setAtivo(true);
     }
 
     @Override
@@ -58,38 +58,38 @@ public class UsuarioServiceAdapter implements UsuarioService {
         if (id <= 0) {
             return;
         }
-        usuarioDao.remove(id);
+        userDao.remove(id);
     }
 
     @Override
-    public boolean update(final int id, final UsuarioModel usuarioModel) {
-        final UsuarioModel stored = findById(id);
-        if (stored == null || usuarioModel == null) {
+    public boolean update(final int id, final UserModel userModel) {
+        final UserModel stored = findById(id);
+        if (stored == null || userModel == null) {
             return false;
         }
-        usuarioDao.updateInformation(id, usuarioModel);
+        userDao.updateInformation(id, userModel);
         return true;
     }
 
     @Override
-    public UsuarioModel findById(final int id) {
+    public UserModel findById(final int id) {
         if (id <= 0) {
             return null;
         }
-        return usuarioDao.readyById(id);
+        return userDao.readyById(id);
     }
 
     @Override
-    public List<UsuarioModel> findALl() {
-        return usuarioDao.readAll();
+    public List<UserModel> findALl() {
+        return userDao.readAll();
     }
 
     @Override
-    public UsuarioModel findByEmail(final String email) {
+    public UserModel findByEmail(final String email) {
         if (isInvalidEmail(email)) {
             return null;
         }
-        return usuarioDao.readByEmail(email);
+        return userDao.readByEmail(email);
     }
 
     private boolean isInvalidEmail(final String email) {

@@ -2,112 +2,206 @@ package br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.coleta;
 
 import br.fai.lds.e_lixo_zero.domain.SolicitacaoColetaModel;
 import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.coleta.SolicitacaoColetaDao;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
-import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SolicitacaoColetaPostgresDaoAdapter implements SolicitacaoColetaDao {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final Connection connection;
 
-    public SolicitacaoColetaPostgresDaoAdapter(final DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public SolicitacaoColetaPostgresDaoAdapter(final Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public int add(final SolicitacaoColetaModel entity) {
         final String sql = "INSERT INTO solicitacoes_coleta (id_usuario, id_residuo, logradouro, numero, bairro, cidade, estado, quantidade_estimada, data_desejada, status, observacoes, data_solicitacao, data_atualizacao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, current_timestamp, current_timestamp)";
-        final KeyHolder keyHolder = new GeneratedKeyHolder();
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql, new String[]{"id_solicitacao"});
+            preparedStatement.setInt(1, entity.getUsuarioId());
+            preparedStatement.setInt(2, entity.getTipoResiduoId());
+            preparedStatement.setString(3, entity.getLogradouro());
+            preparedStatement.setString(4, entity.getNumero());
+            preparedStatement.setString(5, entity.getBairro());
+            preparedStatement.setString(6, entity.getCidade());
+            preparedStatement.setString(7, entity.getEstado());
+            preparedStatement.setString(8, entity.getQuantidadeEstimada());
+            preparedStatement.setDate(9, Date.valueOf(entity.getDataDesejada()));
+            preparedStatement.setString(10, entity.getStatus());
+            preparedStatement.setString(11, entity.getObservacoes());
+            preparedStatement.executeUpdate();
 
-        jdbcTemplate.update(connection -> {
-            final PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id_solicitacao"});
-            ps.setInt(1, entity.getUsuarioId());
-            ps.setInt(2, entity.getTipoResiduoId());
-            ps.setString(3, entity.getLogradouro());
-            ps.setString(4, entity.getNumero());
-            ps.setString(5, entity.getBairro());
-            ps.setString(6, entity.getCidade());
-            ps.setString(7, entity.getEstado());
-            ps.setString(8, entity.getQuantidadeEstimada());
-            ps.setDate(9, Date.valueOf(entity.getDataDesejada()));
-            ps.setString(10, entity.getStatus());
-            ps.setString(11, entity.getObservacoes());
-            return ps;
-        }, keyHolder);
-
-        final Number key = keyHolder.getKeyAs(Number.class);
-        return key != null ? key.intValue() : 0;
+            final ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            int id = 0;
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            connection.commit();
+            return id;
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void remove(final int id) {
-        jdbcTemplate.update("DELETE FROM solicitacoes_coleta WHERE id_solicitacao = ?", id);
+        final String sql = "DELETE FROM solicitacoes_coleta WHERE id_solicitacao = ?";
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public SolicitacaoColetaModel readyById(final int id) {
-        final List<SolicitacaoColetaModel> result = jdbcTemplate.query("SELECT * FROM solicitacoes_coleta WHERE id_solicitacao = ?", getRowMapper(), id);
-        return result.isEmpty() ? null : result.get(0);
+        final String sql = "SELECT * FROM solicitacoes_coleta WHERE id_solicitacao = ?";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            SolicitacaoColetaModel coleta = null;
+            if (resultSet.next()) {
+                coleta = mapColeta(resultSet);
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return coleta;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<SolicitacaoColetaModel> readAll() {
-        return jdbcTemplate.query("SELECT * FROM solicitacoes_coleta", getRowMapper());
+        final String sql = "SELECT * FROM solicitacoes_coleta";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            final List<SolicitacaoColetaModel> coletas = new ArrayList<>();
+            while (resultSet.next()) {
+                coletas.add(mapColeta(resultSet));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return coletas;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public List<SolicitacaoColetaModel> readByUsuarioId(final int usuarioId) {
-        return jdbcTemplate.query("SELECT * FROM solicitacoes_coleta WHERE id_usuario = ?", getRowMapper(), usuarioId);
+        final String sql = "SELECT * FROM solicitacoes_coleta WHERE id_usuario = ?";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, usuarioId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            final List<SolicitacaoColetaModel> coletas = new ArrayList<>();
+            while (resultSet.next()) {
+                coletas.add(mapColeta(resultSet));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return coletas;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void updateInformation(final int id, final SolicitacaoColetaModel entity) {
         final String sql = "UPDATE solicitacoes_coleta SET id_usuario = ?, id_residuo = ?, logradouro = ?, numero = ?, bairro = ?, cidade = ?, estado = ?, quantidade_estimada = ?, data_desejada = ?, status = ?, observacoes = ?, data_atualizacao = current_timestamp WHERE id_solicitacao = ?";
-        jdbcTemplate.update(sql,
-                entity.getUsuarioId(),
-                entity.getTipoResiduoId(),
-                entity.getLogradouro(),
-                entity.getNumero(),
-                entity.getBairro(),
-                entity.getCidade(),
-                entity.getEstado(),
-                entity.getQuantidadeEstimada(),
-                Date.valueOf(entity.getDataDesejada()),
-                entity.getStatus(),
-                entity.getObservacoes(),
-                id);
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, entity.getUsuarioId());
+            preparedStatement.setInt(2, entity.getTipoResiduoId());
+            preparedStatement.setString(3, entity.getLogradouro());
+            preparedStatement.setString(4, entity.getNumero());
+            preparedStatement.setString(5, entity.getBairro());
+            preparedStatement.setString(6, entity.getCidade());
+            preparedStatement.setString(7, entity.getEstado());
+            preparedStatement.setString(8, entity.getQuantidadeEstimada());
+            preparedStatement.setDate(9, Date.valueOf(entity.getDataDesejada()));
+            preparedStatement.setString(10, entity.getStatus());
+            preparedStatement.setString(11, entity.getObservacoes());
+            preparedStatement.setInt(12, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
     public void updateStatus(final int id, final String status) {
-        jdbcTemplate.update("UPDATE solicitacoes_coleta SET status = ?, data_atualizacao = current_timestamp WHERE id_solicitacao = ?", status, id);
+        final String sql = "UPDATE solicitacoes_coleta SET status = ?, data_atualizacao = current_timestamp WHERE id_solicitacao = ?";
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
     }
 
-    private RowMapper<SolicitacaoColetaModel> getRowMapper() {
-        return (rs, rowNum) -> {
-            final SolicitacaoColetaModel coleta = new SolicitacaoColetaModel();
-            coleta.setId(rs.getInt("id_solicitacao"));
-            coleta.setUsuarioId(rs.getInt("id_usuario"));
-            coleta.setTipoResiduoId(rs.getInt("id_residuo"));
-            final int coletorId = rs.getInt("id_coletor");
-            coleta.setColetorId(rs.wasNull() ? 0 : coletorId);
-            coleta.setLogradouro(rs.getString("logradouro"));
-            coleta.setNumero(rs.getString("numero"));
-            coleta.setBairro(rs.getString("bairro"));
-            coleta.setCidade(rs.getString("cidade"));
-            coleta.setEstado(rs.getString("estado"));
-            coleta.setQuantidadeEstimada(rs.getString("quantidade_estimada"));
-            final Date data = rs.getDate("data_desejada");
-            coleta.setDataDesejada(data != null ? data.toLocalDate().toString() : null);
-            coleta.setStatus(rs.getString("status"));
-            coleta.setObservacoes(rs.getString("observacoes"));
-            return coleta;
-        };
+    private SolicitacaoColetaModel mapColeta(final ResultSet resultSet) throws SQLException {
+        final SolicitacaoColetaModel coleta = new SolicitacaoColetaModel();
+        coleta.setId(resultSet.getInt("id_solicitacao"));
+        coleta.setUsuarioId(resultSet.getInt("id_usuario"));
+        coleta.setTipoResiduoId(resultSet.getInt("id_residuo"));
+        final int coletorId = resultSet.getInt("id_coletor");
+        coleta.setColetorId(resultSet.wasNull() ? 0 : coletorId);
+        coleta.setLogradouro(resultSet.getString("logradouro"));
+        coleta.setNumero(resultSet.getString("numero"));
+        coleta.setBairro(resultSet.getString("bairro"));
+        coleta.setCidade(resultSet.getString("cidade"));
+        coleta.setEstado(resultSet.getString("estado"));
+        coleta.setQuantidadeEstimada(resultSet.getString("quantidade_estimada"));
+        final Date data = resultSet.getDate("data_desejada");
+        coleta.setDataDesejada(data != null ? data.toLocalDate().toString() : null);
+        coleta.setStatus(resultSet.getString("status"));
+        coleta.setObservacoes(resultSet.getString("observacoes"));
+        return coleta;
     }
 }

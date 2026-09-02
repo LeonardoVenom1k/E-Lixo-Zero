@@ -1,9 +1,6 @@
 package br.fai.lds.e_lixo_zero.exceptions.handler;
 
 import br.fai.lds.e_lixo_zero.exceptions.ApiException;
-import br.fai.lds.e_lixo_zero.exceptions.BadRequestException;
-import br.fai.lds.e_lixo_zero.exceptions.ResourceNotFoundException;
-import br.fai.lds.e_lixo_zero.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

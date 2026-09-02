@@ -1,18 +1,18 @@
 package br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.usuario;
 
-import br.fai.lds.e_lixo_zero.domain.UsuarioModel;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.usuario.UsuarioDao;
+import br.fai.lds.e_lixo_zero.domain.UserModel;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.usuario.UserDao;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioFakeDaoAdapter implements UsuarioDao {
+public class UserFakeDaoAdapter implements UserDao {
 
-    private static final List<UsuarioModel> USUARIOS = new ArrayList<>();
+    private static final List<UserModel> USUARIOS = new ArrayList<>();
     private static int nextId = 1;
 
     static {
-        final UsuarioModel usuario = new UsuarioModel();
+        final UserModel usuario = new UserModel();
         usuario.setId(nextId++);
         usuario.setNomeCompleto("João Silva");
         usuario.setEmail("joao@gmail.com");
@@ -30,7 +30,7 @@ public class UsuarioFakeDaoAdapter implements UsuarioDao {
     }
 
     @Override
-    public int add(final UsuarioModel entity) {
+    public int add(final UserModel entity) {
         if (entity == null) {
             return 0;
         }
@@ -45,7 +45,7 @@ public class UsuarioFakeDaoAdapter implements UsuarioDao {
     }
 
     @Override
-    public UsuarioModel readyById(final int id) {
+    public UserModel readyById(final int id) {
         return USUARIOS.stream()
                 .filter(u -> u.getId() == id)
                 .findFirst()
@@ -53,13 +53,13 @@ public class UsuarioFakeDaoAdapter implements UsuarioDao {
     }
 
     @Override
-    public List<UsuarioModel> readAll() {
+    public List<UserModel> readAll() {
         return new ArrayList<>(USUARIOS);
     }
 
     @Override
-    public void updateInformation(final int id, final UsuarioModel entity) {
-        final UsuarioModel stored = readyById(id);
+    public void updateInformation(final int id, final UserModel entity) {
+        final UserModel stored = readyById(id);
         if (stored == null) {
             return;
         }
@@ -76,7 +76,7 @@ public class UsuarioFakeDaoAdapter implements UsuarioDao {
     }
 
     @Override
-    public UsuarioModel readByEmail(final String email) {
+    public UserModel readByEmail(final String email) {
         if (email == null || email.isBlank()) {
             return null;
         }

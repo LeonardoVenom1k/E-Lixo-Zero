@@ -1,6 +1,6 @@
 package br.fai.lds.e_lixo_zero.controller;
 
-import br.fai.lds.e_lixo_zero.domain.UsuarioModel;
+import br.fai.lds.e_lixo_zero.domain.UserModel;
 import br.fai.lds.e_lixo_zero.dto.LoginRequestDto;
 import br.fai.lds.e_lixo_zero.dto.LoginResponseDto;
 import br.fai.lds.e_lixo_zero.exceptions.UnauthorizedException;
@@ -30,13 +30,13 @@ public class UsuarioController {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping
-    public ResponseEntity<List<UsuarioModel>> getAll() {
+    public ResponseEntity<List<UserModel>> getAll() {
         return ResponseEntity.ok(usuarioService.findALl());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioModel> getById(@PathVariable final int id) {
-        final UsuarioModel usuario = usuarioService.findById(id);
+    public ResponseEntity<UserModel> getById(@PathVariable final int id) {
+        final UserModel usuario = usuarioService.findById(id);
         if (usuario == null) {
             throw new ResourceNotFoundException("Usuário não encontrado");
         }
@@ -44,8 +44,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody final UsuarioModel usuarioModel) {
-        final int id = usuarioService.create(usuarioModel);
+    public ResponseEntity<Void> create(@RequestBody final UserModel userModel) {
+        final int id = usuarioService.create(userModel);
         if (id == 0) {
             return ResponseEntity.badRequest().build();
         }
@@ -57,8 +57,8 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable final int id, @RequestBody final UsuarioModel usuarioModel) {
-        final boolean updated = usuarioService.update(id, usuarioModel);
+    public ResponseEntity<Void> update(@PathVariable final int id, @RequestBody final UserModel userModel) {
+        final boolean updated = usuarioService.update(id, userModel);
         return updated ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
 
@@ -70,7 +70,7 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody final LoginRequestDto loginRequest) {
-        final UsuarioModel usuario = usuarioService.findByEmail(loginRequest.getEmail());
+        final UserModel usuario = usuarioService.findByEmail(loginRequest.getEmail());
         if (usuario == null || !passwordEncoder.matches(loginRequest.getSenha(), usuario.getSenha())) {
             throw new UnauthorizedException("E-mail ou senha inválidos");
         }
@@ -80,7 +80,7 @@ public class UsuarioController {
         return ResponseEntity.ok(response);
     }
 
-    private LoginResponseDto toLoginResponse(final UsuarioModel usuario, final String token) {
+    private LoginResponseDto toLoginResponse(final UserModel usuario, final String token) {
         final LoginResponseDto response = new LoginResponseDto();
         response.setId(usuario.getId());
         response.setNomeCompleto(usuario.getNomeCompleto());

@@ -3,7 +3,7 @@ package br.fai.lds.e_lixo_zero.controller;
 import br.fai.lds.e_lixo_zero.domain.NotificacaoModel;
 import br.fai.lds.e_lixo_zero.domain.SolicitacaoColetaModel;
 import br.fai.lds.e_lixo_zero.domain.TipoResiduoModel;
-import br.fai.lds.e_lixo_zero.domain.UsuarioModel;
+import br.fai.lds.e_lixo_zero.domain.UserModel;
 import br.fai.lds.e_lixo_zero.dto.ColetaRequestDto;
 import br.fai.lds.e_lixo_zero.dto.ColetaResponseDto;
 import br.fai.lds.e_lixo_zero.exceptions.BadRequestException;
@@ -44,7 +44,7 @@ public class ColetasController {
 
     @GetMapping
     public ResponseEntity<List<ColetaResponseDto>> getAll(final HttpServletRequest request) {
-        final UsuarioModel usuario = getUsuario(request);
+        final UserModel usuario = getUsuario(request);
         final List<SolicitacaoColetaModel> coletas = solicitacaoColetaService.findByUsuarioId(usuario.getId());
         return ResponseEntity.ok(toResponseList(coletas));
     }
@@ -64,7 +64,7 @@ public class ColetasController {
 
     @PostMapping
     public ResponseEntity<ColetaResponseDto> create(@RequestBody final ColetaRequestDto request, final HttpServletRequest httpRequest) {
-        final UsuarioModel usuario = getUsuario(httpRequest);
+        final UserModel usuario = getUsuario(httpRequest);
         final TipoResiduoModel residuo = tipoResiduoService.findByNome(request.getResiduo());
         if (residuo == null) {
             throw new BadRequestException("Tipo de resíduo não encontrado");
@@ -122,12 +122,12 @@ public class ColetasController {
         return ResponseEntity.noContent().build();
     }
 
-    private UsuarioModel getUsuario(final HttpServletRequest request) {
+    private UserModel getUsuario(final HttpServletRequest request) {
         final String email = (String) request.getAttribute("email");
         if (email == null || email.isBlank()) {
             throw new UnauthorizedException("Usuário não autenticado");
         }
-        final UsuarioModel usuario = usuarioService.findByEmail(email);
+        final UserModel usuario = usuarioService.findByEmail(email);
         if (usuario == null) {
             throw new UnauthorizedException("Usuário não encontrado");
         }
