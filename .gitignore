@@ -1,0 +1,8 @@
+# Diretorio de exemplo do professor (nao versionar)
+projeto-lds-2026/
+
+# Configuracoes locais do VS Code
+.vscode/
+
+# Arquivos de documentacao auxiliares nao usados
+HELP.md
