@@ -73,7 +73,7 @@ public class SolicitacaoColetaServiceAdapter implements SolicitacaoColetaService
     }
 
     @Override
-    public List<SolicitacaoColetaModel> findALl() {
+    public List<SolicitacaoColetaModel> findAll() {
         return solicitacaoColetaDao.readAll();
     }
 

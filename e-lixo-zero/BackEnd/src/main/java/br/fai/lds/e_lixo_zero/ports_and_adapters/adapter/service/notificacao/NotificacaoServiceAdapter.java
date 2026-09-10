@@ -57,7 +57,7 @@ public class NotificacaoServiceAdapter implements NotificacaoService {
     }
 
     @Override
-    public List<NotificacaoModel> findALl() {
+    public List<NotificacaoModel> findAll() {
         return notificacaoDao.readAll();
     }
 

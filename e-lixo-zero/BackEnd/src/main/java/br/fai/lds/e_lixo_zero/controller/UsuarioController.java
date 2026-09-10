@@ -31,7 +31,7 @@ public class UsuarioController {
 
     @GetMapping
     public ResponseEntity<List<UserModel>> getAll() {
-        return ResponseEntity.ok(usuarioService.findALl());
+        return ResponseEntity.ok(usuarioService.findAll());
     }
 
     @GetMapping("/{id}")

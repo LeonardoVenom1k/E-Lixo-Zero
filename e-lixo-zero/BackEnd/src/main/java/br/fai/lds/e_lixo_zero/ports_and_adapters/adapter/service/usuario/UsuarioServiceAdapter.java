@@ -80,7 +80,7 @@ public class UsuarioServiceAdapter implements UsuarioService {
     }
 
     @Override
-    public List<UserModel> findALl() {
+    public List<UserModel> findAll() {
         return userDao.readAll();
     }
 

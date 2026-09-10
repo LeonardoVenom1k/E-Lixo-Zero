@@ -21,7 +21,7 @@ public class PontoColetaController {
 
     @GetMapping
     public ResponseEntity<List<PontoColetaModel>> getAll() {
-        return ResponseEntity.ok(pontoColetaService.findALl());
+        return ResponseEntity.ok(pontoColetaService.findAll());
     }
 
     @GetMapping("/cidade/{cidade}")

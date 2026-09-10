@@ -62,7 +62,7 @@ public class PontoColetaServiceAdapter implements PontoColetaService {
     }
 
     @Override
-    public List<PontoColetaModel> findALl() {
+    public List<PontoColetaModel> findAll() {
         return pontoColetaDao.readAll();
     }
 

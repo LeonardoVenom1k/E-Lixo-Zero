@@ -21,7 +21,7 @@ public class ResiduoController {
 
     @GetMapping
     public ResponseEntity<List<TipoResiduoModel>> getAll() {
-        return ResponseEntity.ok(tipoResiduoService.findALl());
+        return ResponseEntity.ok(tipoResiduoService.findAll());
     }
 
     @GetMapping("/{id}")

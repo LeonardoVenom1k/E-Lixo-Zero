@@ -53,7 +53,7 @@ public class TipoResiduoServiceAdapter implements TipoResiduoService {
     }
 
     @Override
-    public List<TipoResiduoModel> findALl() {
+    public List<TipoResiduoModel> findAll() {
         return tipoResiduoDao.readAll();
     }
 
