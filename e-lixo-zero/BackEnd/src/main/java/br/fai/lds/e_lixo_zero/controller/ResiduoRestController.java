@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/residuos")
-public class ResiduoController {
+public class ResiduoRestController {
 
     @Autowired
     private TipoResiduoService tipoResiduoService;

@@ -16,7 +16,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/notificacoes")
-public class NotificacoesController {
+public class NotificacoesRestController {
 
     @Autowired
     private NotificacaoService notificacaoService;

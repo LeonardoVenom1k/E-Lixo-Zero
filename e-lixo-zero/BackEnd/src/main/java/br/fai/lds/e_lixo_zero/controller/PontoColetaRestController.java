@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/pontos-coleta")
-public class PontoColetaController {
+public class PontoColetaRestController {
 
     @Autowired
     private PontoColetaService pontoColetaService;

@@ -28,7 +28,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/coletas")
-public class ColetasController {
+public class ColetasRestController {
 
     @Autowired
     private SolicitacaoColetaService solicitacaoColetaService;
