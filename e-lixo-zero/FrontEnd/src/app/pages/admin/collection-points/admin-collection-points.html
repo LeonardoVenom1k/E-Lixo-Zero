@@ -1,0 +1,106 @@
+<div class="page-title">
+  <h1>Gerenciar Pontos de Coleta</h1>
+  <p>Cadastre, edite ou remova pontos de coleta.</p>
+</div>
+
+<div class="message success" *ngIf="message">{{ message }}</div>
+<div class="message error" *ngIf="error">{{ error }}</div>
+
+<div class="top-actions" *ngIf="!showForm">
+  <button type="button" class="btn-primary" (click)="startCreate()">Novo ponto de coleta</button>
+</div>
+
+<form class="card form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="save()">
+
+  <h2>{{ editingId ? 'Editar ponto de coleta' : 'Novo ponto de coleta' }}</h2>
+
+  <div class="field">
+    <label for="name">Nome <span class="required">*</span></label>
+    <input id="name" type="text" formControlName="name" [class.invalid]="isFieldInvalid('name')">
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label for="street">Rua <span class="required">*</span></label>
+      <input id="street" type="text" formControlName="street" [class.invalid]="isFieldInvalid('street')">
+    </div>
+
+    <div class="field">
+      <label for="number">Número</label>
+      <input id="number" type="text" formControlName="number">
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label for="neighborhood">Bairro</label>
+      <input id="neighborhood" type="text" formControlName="neighborhood">
+    </div>
+
+    <div class="field">
+      <label for="city">Cidade <span class="required">*</span></label>
+      <input id="city" type="text" formControlName="city" [class.invalid]="isFieldInvalid('city')">
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label for="state">Estado <span class="required">*</span></label>
+      <input id="state" type="text" maxlength="2" formControlName="state" [class.invalid]="isFieldInvalid('state')">
+    </div>
+
+    <div class="field">
+      <label for="phone">Telefone</label>
+      <input id="phone" type="text" formControlName="phone">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="openingHours">Horário de funcionamento</label>
+    <input id="openingHours" type="text" placeholder="Seg-Sex 8h-18h" formControlName="openingHours">
+  </div>
+
+  <div class="grid-2">
+    <div class="field">
+      <label for="latitude">Latitude <span class="required">*</span></label>
+      <input id="latitude" type="number" step="any" formControlName="latitude" [class.invalid]="isFieldInvalid('latitude')">
+    </div>
+
+    <div class="field">
+      <label for="longitude">Longitude <span class="required">*</span></label>
+      <input id="longitude" type="number" step="any" formControlName="longitude" [class.invalid]="isFieldInvalid('longitude')">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="acceptedWastes">Resíduos aceitos</label>
+    <input id="acceptedWastes" type="text" placeholder="Celulares, Pilhas e baterias" formControlName="acceptedWastes">
+    <small class="hint">Separe os tipos por vírgula.</small>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-secondary" (click)="cancelForm()">Cancelar</button>
+    <button type="submit" class="btn-primary">{{ editingId ? 'Salvar alterações' : 'Cadastrar' }}</button>
+  </div>
+
+</form>
+
+<div class="list" *ngIf="!showForm">
+
+  <div class="card point-card" *ngFor="let point of points">
+
+    <div class="info">
+      <h3>{{ point.name }}</h3>
+      <p>{{ point.address }}</p>
+      <p *ngIf="point.openingHours">{{ point.openingHours }}</p>
+      <p *ngIf="point.acceptedWastes.length">Aceita: {{ point.acceptedWastes.join(', ') }}</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-small secondary" (click)="startEdit(point)">Editar</button>
+      <button type="button" class="btn-small danger" (click)="remove(point)">Excluir</button>
+    </div>
+
+  </div>
+
+</div>
