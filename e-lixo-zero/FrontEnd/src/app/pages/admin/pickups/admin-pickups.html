@@ -12,6 +12,9 @@
     [ngModel]="search()"
     (ngModelChange)="search.set($event)"
     placeholder="Buscar por solicitante, resíduo, endereço ou status..." />
+  <button type="button" class="btn-toggle" (click)="toggleHidden()">
+    {{ showHidden() ? 'Ocultar finalizadas' : 'Mostrar ocultos (' + hiddenCount() + ')' }}
+  </button>
 </section>
 
 <div class="list">

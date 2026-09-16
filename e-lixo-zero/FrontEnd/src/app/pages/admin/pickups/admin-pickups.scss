@@ -13,6 +13,23 @@
   font-size: 17px;
 }
 
+.btn-toggle {
+  height: 54px;
+  border: 1px solid #d6d6d6;
+  border-radius: 10px;
+  padding: 0 20px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #ffffff;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.btn-toggle:hover {
+  background: #f3f4f6;
+}
+
 .list {
   display: flex;
   flex-direction: column;

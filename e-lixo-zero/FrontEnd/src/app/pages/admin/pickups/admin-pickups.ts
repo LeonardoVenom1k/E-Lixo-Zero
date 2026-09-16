@@ -17,23 +17,35 @@ export class AdminPickups implements OnInit {
 
   pickups = signal<Pickup[]>([]);
   search = signal('');
+  showHidden = signal(false);
   message = signal('');
   error = signal('');
   pendingConfirmation = signal<{ pickup: Pickup; status: string; select: HTMLSelectElement } | null>(null);
 
   readonly statuses = ['PENDING', 'Scheduled', 'In Progress', 'Completed', 'Cancelled'];
 
+  hiddenCount = computed(
+    () => this.pickups().filter((pickup) => this.isFinalStatus(pickup.status)).length
+  );
+
   filteredPickups = computed(() => {
+    const visible = this.showHidden()
+      ? this.pickups()
+      : this.pickups().filter((pickup) => !this.isFinalStatus(pickup.status));
     const term = this.search().trim().toLowerCase();
     if (!term) {
-      return this.pickups();
+      return visible;
     }
-    return this.pickups().filter((pickup) =>
+    return visible.filter((pickup) =>
       [pickup.userName, pickup.waste, pickup.street, pickup.neighborhood, pickup.city, this.statusLabel(pickup.status)]
         .filter(Boolean)
         .some((field) => field!.toLowerCase().includes(term))
     );
   });
+
+  toggleHidden(): void {
+    this.showHidden.set(!this.showHidden());
+  }
 
   ngOnInit(): void {
     this.load();
