@@ -6,9 +6,17 @@
 <div class="message success" *ngIf="message()">{{ message() }}</div>
 <div class="message error" *ngIf="error()">{{ error() }}</div>
 
+<section class="search-box">
+  <input
+    type="text"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    placeholder="Buscar por nome, e-mail, cidade ou status..." />
+</section>
+
 <div class="list">
 
-  <div class="card user-card" *ngFor="let user of users()">
+  <div class="card user-card" *ngFor="let user of filteredUsers()">
 
     <div class="info">
       <h3>{{ user.fullName }}</h3>
@@ -39,6 +47,10 @@
 
     </div>
 
+  </div>
+
+  <div class="card empty" *ngIf="filteredUsers().length === 0">
+    Nenhum usuário encontrado.
   </div>
 
 </div>
