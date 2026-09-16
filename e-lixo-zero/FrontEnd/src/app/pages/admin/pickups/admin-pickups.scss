@@ -30,6 +30,17 @@
   background: #f3f4f6;
 }
 
+.status-filter {
+  height: 54px;
+  border: 1px solid #d6d6d6;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 15px;
+  cursor: pointer;
+  background: #ffffff;
+  color: #475569;
+}
+
 .list {
   display: flex;
   flex-direction: column;

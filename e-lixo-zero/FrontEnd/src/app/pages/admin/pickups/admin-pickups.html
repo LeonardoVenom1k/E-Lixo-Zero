@@ -12,6 +12,15 @@
     [ngModel]="search()"
     (ngModelChange)="search.set($event)"
     placeholder="Buscar por solicitante, resíduo, endereço ou status..." />
+  <select
+    class="status-filter"
+    [ngModel]="statusFilter()"
+    (ngModelChange)="statusFilter.set($event)">
+    <option value="">Todos os status</option>
+    <option *ngFor="let status of statuses" [value]="status">
+      {{ statusLabel(status) }}
+    </option>
+  </select>
   <button type="button" class="btn-toggle" (click)="toggleHidden()">
     {{ showHidden() ? 'Ocultar finalizadas' : 'Mostrar ocultos (' + hiddenCount() + ')' }}
   </button>

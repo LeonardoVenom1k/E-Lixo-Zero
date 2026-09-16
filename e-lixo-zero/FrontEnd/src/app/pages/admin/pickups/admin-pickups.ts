@@ -17,6 +17,7 @@ export class AdminPickups implements OnInit {
 
   pickups = signal<Pickup[]>([]);
   search = signal('');
+  statusFilter = signal('');
   showHidden = signal(false);
   message = signal('');
   error = signal('');
@@ -29,9 +30,13 @@ export class AdminPickups implements OnInit {
   );
 
   filteredPickups = computed(() => {
-    const visible = this.showHidden()
-      ? this.pickups()
-      : this.pickups().filter((pickup) => !this.isFinalStatus(pickup.status));
+    const status = this.statusFilter();
+    let visible = this.pickups();
+    if (status) {
+      visible = visible.filter((pickup) => this.matchesStatus(pickup, status));
+    } else if (!this.showHidden()) {
+      visible = visible.filter((pickup) => !this.isFinalStatus(pickup.status));
+    }
     const term = this.search().trim().toLowerCase();
     if (!term) {
       return visible;
@@ -45,6 +50,13 @@ export class AdminPickups implements OnInit {
 
   toggleHidden(): void {
     this.showHidden.set(!this.showHidden());
+  }
+
+  private matchesStatus(pickup: Pickup, status: string): boolean {
+    if (status === 'Cancelled') {
+      return pickup.status === 'Cancelled' || pickup.status === 'Canceled';
+    }
+    return pickup.status === status;
   }
 
   ngOnInit(): void {
