@@ -19,6 +19,7 @@ export class AdminPickups implements OnInit {
   search = signal('');
   message = signal('');
   error = signal('');
+  pendingConfirmation = signal<{ pickup: Pickup; status: string; select: HTMLSelectElement } | null>(null);
 
   readonly statuses = ['PENDING', 'Scheduled', 'In Progress', 'Completed', 'Cancelled'];
 
@@ -49,15 +50,27 @@ export class AdminPickups implements OnInit {
     const select = event.target as HTMLSelectElement;
     const status = select.value;
     if (this.isFinalStatus(status)) {
-      const confirmed = confirm(
-        `Marcar a coleta de ${pickup.waste} como "${this.statusLabel(status)}"? Essa ação não poderá ser desfeita.`
-      );
-      if (!confirmed) {
-        select.value = pickup.status;
-        return;
-      }
+      this.pendingConfirmation.set({ pickup, status, select });
+      return;
     }
     this.updateStatus(pickup, status);
+  }
+
+  confirmStatusChange(): void {
+    const pending = this.pendingConfirmation();
+    if (!pending) {
+      return;
+    }
+    this.pendingConfirmation.set(null);
+    this.updateStatus(pending.pickup, pending.status);
+  }
+
+  cancelStatusChange(): void {
+    const pending = this.pendingConfirmation();
+    if (pending) {
+      pending.select.value = pending.pickup.status;
+    }
+    this.pendingConfirmation.set(null);
   }
 
   updateStatus(pickup: Pickup, status: string): void {

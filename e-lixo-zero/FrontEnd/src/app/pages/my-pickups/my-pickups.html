@@ -31,9 +31,11 @@
     <div
       class="status"
       [ngClass]="{
+        'pending': pickup.status === 'PENDING',
         'scheduled': pickup.status === 'Scheduled',
         'in-progress': pickup.status === 'In Progress',
-        'completed': pickup.status === 'Completed'
+        'completed': pickup.status === 'Completed',
+        'cancelled': pickup.status === 'Cancelled' || pickup.status === 'Canceled'
       }">
 
       {{ statusLabel(pickup.status) }}

@@ -48,3 +48,24 @@
   </div>
 
 </div>
+
+<div class="modal-overlay" *ngIf="pendingConfirmation() as confirmation" (click)="cancelStatusChange()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Confirmar {{ statusLabel(confirmation.status) }}</h3>
+    <p>
+      Marcar a coleta de <strong>{{ confirmation.pickup.waste }}</strong>
+      solicitada por <strong>{{ confirmation.pickup.userName }}</strong> como
+      "{{ statusLabel(confirmation.status) }}"? Essa ação não poderá ser desfeita.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelStatusChange()">Voltar</button>
+      <button
+        type="button"
+        class="btn-confirm"
+        [class.danger]="confirmation.status === 'Cancelled' || confirmation.status === 'Canceled'"
+        (click)="confirmStatusChange()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

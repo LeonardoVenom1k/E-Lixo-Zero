@@ -25,6 +25,11 @@
   font-weight: 600;
 }
 
+.pending {
+  background: #e2e8f0;
+  color: #475569;
+}
+
 .scheduled {
   background: #dbeafe;
   color: #1d4ed8;
@@ -38,4 +43,9 @@
 .completed {
   background: #dcfce7;
   color: #15803d;
+}
+
+.cancelled {
+  background: #fee2e2;
+  color: #b91c1c;
 }
