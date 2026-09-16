@@ -40,3 +40,17 @@
   </div>
 
 </form>
+
+<div class="modal-overlay" *ngIf="confirmingSend()" (click)="cancelSend()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Confirmar envio</h3>
+    <p>
+      Enviar a notificação <strong>"{{ form.value.title }}"</strong> para
+      <strong>{{ recipientLabel() }}</strong>?
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelSend()">Voltar</button>
+      <button type="button" class="btn-confirm" (click)="confirmSend()">Enviar</button>
+    </div>
+  </div>
+</div>

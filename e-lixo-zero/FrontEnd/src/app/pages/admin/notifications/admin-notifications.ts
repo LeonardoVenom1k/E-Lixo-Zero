@@ -21,6 +21,7 @@ export class AdminNotifications implements OnInit {
   users = signal<User[]>([]);
   message = signal('');
   error = signal('');
+  confirmingSend = signal(false);
 
   form = this.fb.group({
     recipient: ['all', Validators.required],
@@ -43,7 +44,11 @@ export class AdminNotifications implements OnInit {
       this.error.set('Preencha os campos obrigatórios.');
       return;
     }
+    this.confirmingSend.set(true);
+  }
 
+  confirmSend(): void {
+    this.confirmingSend.set(false);
     this.clearMessages();
     const value = this.form.value;
     const notification = {
@@ -73,6 +78,19 @@ export class AdminNotifications implements OnInit {
         },
         error: () => this.error.set('Erro ao enviar notificação.'),
       });
+  }
+
+  cancelSend(): void {
+    this.confirmingSend.set(false);
+  }
+
+  recipientLabel(): string {
+    const recipient = this.form.value.recipient;
+    if (recipient === 'all') {
+      return 'todos os usuários';
+    }
+    const user = this.users().find((u) => u.id === Number(recipient));
+    return user ? user.fullName : 'o usuário selecionado';
   }
 
   isFieldInvalid(name: string): boolean {
