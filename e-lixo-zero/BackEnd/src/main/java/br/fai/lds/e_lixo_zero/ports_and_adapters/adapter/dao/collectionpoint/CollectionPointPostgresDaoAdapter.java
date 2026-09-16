@@ -175,7 +175,8 @@ public class CollectionPointPostgresDaoAdapter implements CollectionPointDao {
     }
 
     private void prepareDefaults(final CollectionPointModel entity) {
-        if (entity.getAddress() != null && !entity.getAddress().isBlank()) {
+        if ((entity.getStreet() == null || entity.getStreet().isBlank())
+                && entity.getAddress() != null && !entity.getAddress().isBlank()) {
             entity.setStreet(entity.getAddress().trim());
         }
         if (entity.getStreet() == null || entity.getStreet().isBlank()) {
