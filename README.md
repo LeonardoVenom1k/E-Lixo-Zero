@@ -30,20 +30,20 @@ A plataforma permite localizar pontos de coleta (inclusive ordenados pela distâ
 
 ### Áreas restritas
 
-- Dashboard personalizado
+- Dashboard personalizado, com indicador visual (bolinha vermelha) no sino quando há notificações não lidas
 - Solicitação de coleta
-- Visualização das coletas realizadas
+- Visualização das coletas realizadas, com status coloridos (pendente, agendada, em andamento, concluída, cancelada)
 - Consulta de resíduos
-- Central de notificações (inclui notificação de boas-vindas automática no cadastro)
+- Central de notificações (inclui notificação de boas-vindas automática no cadastro; ao abrir a central, as notificações são marcadas como lidas)
 - Perfil do usuário
 
 ### Área administrativa (perfil ADMIN)
 
-- Gerenciamento de usuários (listar, ativar/desativar, excluir)
+- Gerenciamento de usuários (listar, ativar/desativar, excluir, com modal de confirmação; usuário desativado ou excluído perde o acesso imediatamente, inclusive sessões abertas)
 - Gerenciamento de pontos de coleta (cadastrar, editar, excluir)
 - Gerenciamento de tipos de resíduos (cadastrar, editar, excluir)
-- Gerenciamento de agendamentos (visualizar todas as coletas e atualizar status, com notificação automática ao usuário)
-- Envio de notificações para um usuário específico ou para todos (broadcast)
+- Gerenciamento de agendamentos (visualizar todas as coletas, buscar por solicitante/resíduo/endereço/status e atualizar status, com notificação automática ao usuário; status "Concluída" e "Cancelada" exigem confirmação e não podem mais ser alterados)
+- Envio de notificações para um usuário específico ou para todos (broadcast), com modal de confirmação antes do envio
 
 ## Tecnologias Utilizadas
 
