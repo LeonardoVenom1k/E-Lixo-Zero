@@ -1,0 +1,56 @@
+<div class="page-title">
+  <h1>Gerenciar Resíduos</h1>
+  <p>Cadastre, edite ou remova tipos de resíduos aceitos.</p>
+</div>
+
+<div class="message success" *ngIf="message">{{ message }}</div>
+<div class="message error" *ngIf="error">{{ error }}</div>
+
+<div class="top-actions" *ngIf="!showForm">
+  <button type="button" class="btn-primary" (click)="startCreate()">Novo resíduo</button>
+</div>
+
+<form class="card form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="save()">
+
+  <h2>{{ editingId ? 'Editar resíduo' : 'Novo resíduo' }}</h2>
+
+  <div class="field">
+    <label for="name">Nome <span class="required">*</span></label>
+    <input id="name" type="text" formControlName="name" [class.invalid]="isFieldInvalid('name')">
+  </div>
+
+  <div class="field">
+    <label for="category">Categoria <span class="required">*</span></label>
+    <input id="category" type="text" placeholder="Eletrônicos, Perigosos..." formControlName="category" [class.invalid]="isFieldInvalid('category')">
+  </div>
+
+  <div class="field">
+    <label for="description">Descrição</label>
+    <textarea id="description" rows="3" formControlName="description"></textarea>
+  </div>
+
+  <div class="actions">
+    <button type="button" class="btn-secondary" (click)="cancelForm()">Cancelar</button>
+    <button type="submit" class="btn-primary">{{ editingId ? 'Salvar alterações' : 'Cadastrar' }}</button>
+  </div>
+
+</form>
+
+<div class="list" *ngIf="!showForm">
+
+  <div class="card waste-card" *ngFor="let wasteType of wasteTypes">
+
+    <div class="info">
+      <h3>{{ wasteType.name }}</h3>
+      <p class="category">{{ wasteType.category }}</p>
+      <p *ngIf="wasteType.description">{{ wasteType.description }}</p>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn-small secondary" (click)="startEdit(wasteType)">Editar</button>
+      <button type="button" class="btn-small danger" (click)="remove(wasteType)">Excluir</button>
+    </div>
+
+  </div>
+
+</div>
