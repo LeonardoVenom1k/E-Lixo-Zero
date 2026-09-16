@@ -17,6 +17,7 @@ export class AdminUsers implements OnInit {
   users = signal<User[]>([]);
   message = signal('');
   error = signal('');
+  pendingAction = signal<{ user: User; action: 'deactivate' | 'delete' } | null>(null);
 
   ngOnInit(): void {
     this.load();
@@ -30,6 +31,35 @@ export class AdminUsers implements OnInit {
   }
 
   toggleActive(user: User): void {
+    if (user.active) {
+      this.pendingAction.set({ user, action: 'deactivate' });
+      return;
+    }
+    this.doToggleActive(user);
+  }
+
+  remove(user: User): void {
+    this.pendingAction.set({ user, action: 'delete' });
+  }
+
+  confirmAction(): void {
+    const pending = this.pendingAction();
+    if (!pending) {
+      return;
+    }
+    this.pendingAction.set(null);
+    if (pending.action === 'delete') {
+      this.doRemove(pending.user);
+    } else {
+      this.doToggleActive(pending.user);
+    }
+  }
+
+  cancelAction(): void {
+    this.pendingAction.set(null);
+  }
+
+  private doToggleActive(user: User): void {
     this.clearMessages();
     this.usersService.update(Number(user.id), { ...user, active: !user.active }).subscribe({
       next: () => {
@@ -40,10 +70,7 @@ export class AdminUsers implements OnInit {
     });
   }
 
-  remove(user: User): void {
-    if (!confirm(`Excluir o usuário "${user.fullName}"? Essa ação não pode ser desfeita.`)) {
-      return;
-    }
+  private doRemove(user: User): void {
     this.clearMessages();
     this.usersService.delete(Number(user.id)).subscribe({
       next: () => {

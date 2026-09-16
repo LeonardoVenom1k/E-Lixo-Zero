@@ -42,3 +42,23 @@
   </div>
 
 </div>
+
+<div class="modal-overlay" *ngIf="pendingAction() as pending" (click)="cancelAction()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>{{ pending.action === 'delete' ? 'Excluir usuário' : 'Desativar usuário' }}</h3>
+    <p *ngIf="pending.action === 'delete'">
+      Excluir o usuário <strong>{{ pending.user.fullName }}</strong>?
+      Essa ação não poderá ser desfeita.
+    </p>
+    <p *ngIf="pending.action === 'deactivate'">
+      Desativar o usuário <strong>{{ pending.user.fullName }}</strong>?
+      Ele não poderá mais acessar a plataforma.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelAction()">Voltar</button>
+      <button type="button" class="btn-confirm danger" (click)="confirmAction()">
+        {{ pending.action === 'delete' ? 'Excluir' : 'Desativar' }}
+      </button>
+    </div>
+  </div>
+</div>
