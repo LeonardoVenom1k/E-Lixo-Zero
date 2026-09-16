@@ -1,5 +1,6 @@
 export interface Pickup {
   id: number;
+  userName?: string;
   waste: string;
   quantity: number;
   street: string;

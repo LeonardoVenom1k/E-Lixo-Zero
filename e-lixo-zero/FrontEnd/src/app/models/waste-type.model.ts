@@ -3,4 +3,5 @@ export interface WasteType {
   name: string;
   category: string;
   description: string;
+  active?: boolean;
 }

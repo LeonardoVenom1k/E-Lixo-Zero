@@ -10,6 +10,7 @@ export interface User {
   state?: string;
   phone?: string;
   userType?: string;
+  active?: boolean;
   cpf?: string; // CPF opcional
 }
 
@@ -23,4 +24,5 @@ export interface UserCompat {
   number?: string;
   neighborhood?: string;
   city?: string;
+  userType?: string;
 }

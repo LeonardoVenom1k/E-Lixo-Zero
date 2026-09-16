@@ -27,8 +27,12 @@ export class NotificationsService {
     return this.http.get<Notification[]>(`${this.api}/user/${userId}/unread`);
   }
 
-  create(notification: Notification): Observable<Notification> {
+  create(notification: Partial<Notification>): Observable<Notification> {
     return this.http.post<Notification>(this.api, notification);
+  }
+
+  broadcast(notification: Partial<Notification>): Observable<number> {
+    return this.http.post<number>(`${this.api}/broadcast`, notification);
   }
 
   markAsRead(id: number): Observable<Notification> {

@@ -28,7 +28,8 @@ export class AuthService {
           street: user.street || '',
           number: user.number || '',
           neighborhood: user.neighborhood || '',
-          city: user.city || ''
+          city: user.city || '',
+          userType: user.userType || 'CITIZEN'
         };
 
         localStorage.setItem(this.userKey, JSON.stringify(userCompat));
@@ -56,6 +57,15 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return localStorage.getItem(this.userKey) !== null;
+  }
+
+  getUser(): UserCompat | null {
+    const savedUser = localStorage.getItem(this.userKey);
+    return savedUser ? JSON.parse(savedUser) : null;
+  }
+
+  isAdmin(): boolean {
+    return this.getUser()?.userType === 'ADMIN';
   }
 
   getToken(): string | null {
