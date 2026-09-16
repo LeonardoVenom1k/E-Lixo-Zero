@@ -37,6 +37,14 @@ A plataforma permite localizar pontos de coleta (inclusive ordenados pela distâ
 - Central de notificações (inclui notificação de boas-vindas automática no cadastro)
 - Perfil do usuário
 
+### Área administrativa (perfil ADMIN)
+
+- Gerenciamento de usuários (listar, ativar/desativar, excluir)
+- Gerenciamento de pontos de coleta (cadastrar, editar, excluir)
+- Gerenciamento de tipos de resíduos (cadastrar, editar, excluir)
+- Gerenciamento de agendamentos (visualizar todas as coletas e atualizar status, com notificação automática ao usuário)
+- Envio de notificações para um usuário específico ou para todos (broadcast)
+
 ## Tecnologias Utilizadas
 
 - **Front-end:** Angular 21, TypeScript, SCSS, HTML5
@@ -99,10 +107,11 @@ spring.datasource.password=SUA_SENHA
    - `create-tables-postgres.sql` — cria as tabelas (recria do zero, apaga dados anteriores)
    - `insert-data-postgres-basic.sql` — carga inicial: usuários de exemplo, tipos de resíduo, pontos de coleta em Santa Rita do Sapucaí e Cachoeira de Minas, coletas e notificações
 
-Usuários de exemplo (senha `123456` para ambos):
+Usuários de exemplo (senha `123456` para todos):
 
 - `joao@gmail.com` — Santa Rita do Sapucaí
 - `maria@gmail.com` — Cachoeira de Minas
+- `admin@elixozero.com` — administrador (acessa a área administrativa após o login)
 
 ### 2. Iniciar o back-end
 
@@ -133,9 +142,20 @@ A aplicação estará disponível em `http://localhost:4200`.
 - `GET /api/waste-types` — lista tipos de resíduos
 - `GET /api/pickups` — lista coletas do usuário autenticado
 - `POST /api/pickups` — solicita uma nova coleta
-- `PUT /api/pickups/{id}/status` — atualiza o status de uma coleta
 - `GET /api/notifications` — lista notificações do usuário
 - `PUT /api/notifications/{id}/mark-read` — marca notificação como lida
+
+Endpoints exclusivos do administrador:
+
+- `GET /api/users` — lista todos os usuários
+- `PUT /api/users/{id}` — atualiza usuário (ex.: ativar/desativar)
+- `DELETE /api/users/{id}` — exclui usuário
+- `GET /api/pickups/all` — lista todas as coletas com o nome do solicitante
+- `PUT /api/pickups/{id}/status` — atualiza status e notifica o usuário
+- `POST /api/collection-points`, `PUT`/`DELETE /api/collection-points/{id}` — gerencia pontos de coleta
+- `POST /api/waste-types`, `PUT`/`DELETE /api/waste-types/{id}` — gerencia tipos de resíduo
+- `POST /api/notifications` — envia notificação para um usuário
+- `POST /api/notifications/broadcast` — envia notificação para todos os usuários ativos
 
 ## Licença
 
