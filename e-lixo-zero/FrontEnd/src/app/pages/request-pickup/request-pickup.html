@@ -10,12 +10,12 @@
     [formGroup]="form"
     (ngSubmit)="save()">
 
-    <div class="message success" *ngIf="message">
-      {{ message }}
+    <div class="message success" *ngIf="message()">
+      {{ message() }}
     </div>
 
-    <div class="message error" *ngIf="error">
-      {{ error }}
+    <div class="message error" *ngIf="error()">
+      {{ error() }}
     </div>
 
     <div class="field">

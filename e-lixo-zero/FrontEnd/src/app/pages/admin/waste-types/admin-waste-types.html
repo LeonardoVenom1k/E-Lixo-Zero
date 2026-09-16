@@ -3,16 +3,16 @@
   <p>Cadastre, edite ou remova tipos de resíduos aceitos.</p>
 </div>
 
-<div class="message success" *ngIf="message">{{ message }}</div>
-<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="message()">{{ message() }}</div>
+<div class="message error" *ngIf="error()">{{ error() }}</div>
 
-<div class="top-actions" *ngIf="!showForm">
+<div class="top-actions" *ngIf="!showForm()">
   <button type="button" class="btn-primary" (click)="startCreate()">Novo resíduo</button>
 </div>
 
-<form class="card form" *ngIf="showForm" [formGroup]="form" (ngSubmit)="save()">
+<form class="card form" *ngIf="showForm()" [formGroup]="form" (ngSubmit)="save()">
 
-  <h2>{{ editingId ? 'Editar resíduo' : 'Novo resíduo' }}</h2>
+  <h2>{{ editingId() ? 'Editar resíduo' : 'Novo resíduo' }}</h2>
 
   <div class="field">
     <label for="name">Nome <span class="required">*</span></label>
@@ -31,14 +31,14 @@
 
   <div class="actions">
     <button type="button" class="btn-secondary" (click)="cancelForm()">Cancelar</button>
-    <button type="submit" class="btn-primary">{{ editingId ? 'Salvar alterações' : 'Cadastrar' }}</button>
+    <button type="submit" class="btn-primary">{{ editingId() ? 'Salvar alterações' : 'Cadastrar' }}</button>
   </div>
 
 </form>
 
-<div class="list" *ngIf="!showForm">
+<div class="list" *ngIf="!showForm()">
 
-  <div class="card waste-card" *ngFor="let wasteType of wasteTypes">
+  <div class="card waste-card" *ngFor="let wasteType of wasteTypes()">
 
     <div class="info">
       <h3>{{ wasteType.name }}</h3>

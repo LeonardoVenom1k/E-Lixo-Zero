@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Pickup } from '../../../models/pickup.model';
@@ -15,9 +15,9 @@ import { PickupsService } from '../../../services/pickups';
 export class AdminPickups implements OnInit {
   private pickupsService = inject(PickupsService);
 
-  pickups: Pickup[] = [];
-  message = '';
-  error = '';
+  pickups = signal<Pickup[]>([]);
+  message = signal('');
+  error = signal('');
 
   readonly statuses = ['PENDING', 'Scheduled', 'In Progress', 'Completed', 'Cancelled'];
 
@@ -27,8 +27,8 @@ export class AdminPickups implements OnInit {
 
   load(): void {
     this.pickupsService.listAll().subscribe({
-      next: (pickups) => (this.pickups = pickups),
-      error: () => (this.error = 'Erro ao carregar agendamentos.'),
+      next: (pickups) => this.pickups.set(pickups),
+      error: () => this.error.set('Erro ao carregar agendamentos.'),
     });
   }
 
@@ -36,10 +36,10 @@ export class AdminPickups implements OnInit {
     this.clearMessages();
     this.pickupsService.updateStatus(pickup.id, status).subscribe({
       next: () => {
-        this.message = 'Status atualizado e usuário notificado.';
+        this.message.set('Status atualizado e usuário notificado.');
         this.load();
       },
-      error: () => (this.error = 'Erro ao atualizar status.'),
+      error: () => this.error.set('Erro ao atualizar status.'),
     });
   }
 
@@ -68,7 +68,7 @@ export class AdminPickups implements OnInit {
   }
 
   private clearMessages(): void {
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 }

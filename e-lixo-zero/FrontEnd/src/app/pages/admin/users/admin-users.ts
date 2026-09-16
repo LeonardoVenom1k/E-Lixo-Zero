@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 
 import { User } from '../../../models/user.model';
 import { UsersService } from '../../../services/users';
@@ -14,9 +14,9 @@ import { UsersService } from '../../../services/users';
 export class AdminUsers implements OnInit {
   private usersService = inject(UsersService);
 
-  users: User[] = [];
-  message = '';
-  error = '';
+  users = signal<User[]>([]);
+  message = signal('');
+  error = signal('');
 
   ngOnInit(): void {
     this.load();
@@ -24,8 +24,8 @@ export class AdminUsers implements OnInit {
 
   load(): void {
     this.usersService.list().subscribe({
-      next: (users) => (this.users = users),
-      error: () => (this.error = 'Erro ao carregar usuários.'),
+      next: (users) => this.users.set(users),
+      error: () => this.error.set('Erro ao carregar usuários.'),
     });
   }
 
@@ -33,10 +33,10 @@ export class AdminUsers implements OnInit {
     this.clearMessages();
     this.usersService.update(Number(user.id), { ...user, active: !user.active }).subscribe({
       next: () => {
-        this.message = `Usuário ${user.active ? 'desativado' : 'ativado'} com sucesso.`;
+        this.message.set(`Usuário ${user.active ? 'desativado' : 'ativado'} com sucesso.`);
         this.load();
       },
-      error: () => (this.error = 'Erro ao atualizar usuário.'),
+      error: () => this.error.set('Erro ao atualizar usuário.'),
     });
   }
 
@@ -47,10 +47,10 @@ export class AdminUsers implements OnInit {
     this.clearMessages();
     this.usersService.delete(Number(user.id)).subscribe({
       next: () => {
-        this.message = 'Usuário excluído com sucesso.';
+        this.message.set('Usuário excluído com sucesso.');
         this.load();
       },
-      error: () => (this.error = 'Erro ao excluir usuário. Ele pode ter coletas ou notificações vinculadas.'),
+      error: () => this.error.set('Erro ao excluir usuário. Ele pode ter coletas ou notificações vinculadas.'),
     });
   }
 
@@ -59,7 +59,7 @@ export class AdminUsers implements OnInit {
   }
 
   private clearMessages(): void {
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -27,11 +27,11 @@ export class RegisterComponent {
   neighborhood = '';
   city = 'Santa Rita do Sapucaí';
 
-  error = '';
+  error = signal('');
 
   register(): void {
     if (this.password !== this.confirmPassword) {
-      this.error = 'As senhas não coincidem.';
+      this.error.set('As senhas não coincidem.');
       return;
     }
 
@@ -66,7 +66,7 @@ export class RegisterComponent {
           this.router.navigate(['/dashboard']);
         },
         error: () => {
-          this.error = 'Erro ao cadastrar usuário.';
+          this.error.set('Erro ao cadastrar usuário.');
         },
       });
   }

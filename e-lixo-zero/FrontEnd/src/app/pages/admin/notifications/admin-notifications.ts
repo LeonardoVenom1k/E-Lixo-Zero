@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { User } from '../../../models/user.model';
@@ -18,9 +18,9 @@ export class AdminNotifications implements OnInit {
   private notificationsService = inject(NotificationsService);
   private usersService = inject(UsersService);
 
-  users: User[] = [];
-  message = '';
-  error = '';
+  users = signal<User[]>([]);
+  message = signal('');
+  error = signal('');
 
   form = this.fb.group({
     recipient: ['all', Validators.required],
@@ -31,16 +31,16 @@ export class AdminNotifications implements OnInit {
 
   ngOnInit(): void {
     this.usersService.list().subscribe({
-      next: (users) => (this.users = users.filter((user) => user.userType !== 'ADMIN')),
-      error: () => (this.error = 'Erro ao carregar usuários.'),
+      next: (users) => this.users.set(users.filter((user) => user.userType !== 'ADMIN')),
+      error: () => this.error.set('Erro ao carregar usuários.'),
     });
   }
 
   send(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.message = '';
-      this.error = 'Preencha os campos obrigatórios.';
+      this.message.set('');
+      this.error.set('Preencha os campos obrigatórios.');
       return;
     }
 
@@ -56,10 +56,10 @@ export class AdminNotifications implements OnInit {
     if (value.recipient === 'all') {
       this.notificationsService.broadcast(notification).subscribe({
         next: (sent) => {
-          this.message = `Notificação enviada para ${sent} usuário(s).`;
+          this.message.set(`Notificação enviada para ${sent} usuário(s).`);
           this.resetForm();
         },
-        error: () => (this.error = 'Erro ao enviar notificação.'),
+        error: () => this.error.set('Erro ao enviar notificação.'),
       });
       return;
     }
@@ -68,10 +68,10 @@ export class AdminNotifications implements OnInit {
       .create({ ...notification, userId: Number(value.recipient) })
       .subscribe({
         next: () => {
-          this.message = 'Notificação enviada com sucesso.';
+          this.message.set('Notificação enviada com sucesso.');
           this.resetForm();
         },
-        error: () => (this.error = 'Erro ao enviar notificação.'),
+        error: () => this.error.set('Erro ao enviar notificação.'),
       });
   }
 
@@ -88,7 +88,7 @@ export class AdminNotifications implements OnInit {
   }
 
   private clearMessages(): void {
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 }

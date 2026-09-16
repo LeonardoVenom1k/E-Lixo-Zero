@@ -79,7 +79,7 @@
       [(ngModel)]="confirmPassword"
     />
 
-    <p class="error" *ngIf="error">{{ error }}</p>
+    <p class="error" *ngIf="error()">{{ error() }}</p>
 
     <button class="btn btn-primary full" type="button" (click)="register()">
       Cadastrar

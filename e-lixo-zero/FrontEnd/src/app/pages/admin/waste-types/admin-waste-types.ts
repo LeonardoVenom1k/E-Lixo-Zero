@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { WasteType } from '../../../models/waste-type.model';
@@ -16,11 +16,11 @@ export class AdminWasteTypes implements OnInit {
   private fb = inject(FormBuilder);
   private wasteTypesService = inject(WasteTypesService);
 
-  wasteTypes: WasteType[] = [];
-  editingId: number | null = null;
-  showForm = false;
-  message = '';
-  error = '';
+  wasteTypes = signal<WasteType[]>([]);
+  editingId = signal<number | null>(null);
+  showForm = signal(false);
+  message = signal('');
+  error = signal('');
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -34,22 +34,22 @@ export class AdminWasteTypes implements OnInit {
 
   load(): void {
     this.wasteTypesService.list().subscribe({
-      next: (wasteTypes) => (this.wasteTypes = wasteTypes),
-      error: () => (this.error = 'Erro ao carregar tipos de resíduo.'),
+      next: (wasteTypes) => this.wasteTypes.set(wasteTypes),
+      error: () => this.error.set('Erro ao carregar tipos de resíduo.'),
     });
   }
 
   startCreate(): void {
     this.clearMessages();
-    this.editingId = null;
-    this.showForm = true;
+    this.editingId.set(null);
+    this.showForm.set(true);
     this.form.reset();
   }
 
   startEdit(wasteType: WasteType): void {
     this.clearMessages();
-    this.editingId = wasteType.id;
-    this.showForm = true;
+    this.editingId.set(wasteType.id);
+    this.showForm.set(true);
     this.form.patchValue({
       name: wasteType.name,
       category: wasteType.category,
@@ -58,16 +58,16 @@ export class AdminWasteTypes implements OnInit {
   }
 
   cancelForm(): void {
-    this.showForm = false;
-    this.editingId = null;
+    this.showForm.set(false);
+    this.editingId.set(null);
     this.clearMessages();
   }
 
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.message = '';
-      this.error = 'Preencha os campos obrigatórios.';
+      this.message.set('');
+      this.error.set('Preencha os campos obrigatórios.');
       return;
     }
 
@@ -80,18 +80,19 @@ export class AdminWasteTypes implements OnInit {
       active: true,
     } as WasteType;
 
-    const request = this.editingId
-      ? this.wasteTypesService.update(this.editingId, wasteType)
+    const editingId = this.editingId();
+    const request = editingId
+      ? this.wasteTypesService.update(editingId, wasteType)
       : this.wasteTypesService.create(wasteType);
 
     request.subscribe({
       next: () => {
-        this.message = `Resíduo ${this.editingId ? 'atualizado' : 'cadastrado'} com sucesso.`;
-        this.showForm = false;
-        this.editingId = null;
+        this.message.set(`Resíduo ${editingId ? 'atualizado' : 'cadastrado'} com sucesso.`);
+        this.showForm.set(false);
+        this.editingId.set(null);
         this.load();
       },
-      error: () => (this.error = 'Erro ao salvar resíduo.'),
+      error: () => this.error.set('Erro ao salvar resíduo.'),
     });
   }
 
@@ -102,10 +103,10 @@ export class AdminWasteTypes implements OnInit {
     this.clearMessages();
     this.wasteTypesService.delete(wasteType.id).subscribe({
       next: () => {
-        this.message = 'Resíduo excluído com sucesso.';
+        this.message.set('Resíduo excluído com sucesso.');
         this.load();
       },
-      error: () => (this.error = 'Erro ao excluir resíduo. Ele pode estar vinculado a coletas.'),
+      error: () => this.error.set('Erro ao excluir resíduo. Ele pode estar vinculado a coletas.'),
     });
   }
 
@@ -115,7 +116,7 @@ export class AdminWasteTypes implements OnInit {
   }
 
   private clearMessages(): void {
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 }

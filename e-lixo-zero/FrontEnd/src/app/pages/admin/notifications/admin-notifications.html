@@ -3,8 +3,8 @@
   <p>Envie avisos para um usuário ou para todos.</p>
 </div>
 
-<div class="message success" *ngIf="message">{{ message }}</div>
-<div class="message error" *ngIf="error">{{ error }}</div>
+<div class="message success" *ngIf="message()">{{ message() }}</div>
+<div class="message error" *ngIf="error()">{{ error() }}</div>
 
 <form class="card form" [formGroup]="form" (ngSubmit)="send()">
 
@@ -12,7 +12,7 @@
     <label for="recipient">Destinatário <span class="required">*</span></label>
     <select id="recipient" formControlName="recipient" [class.invalid]="isFieldInvalid('recipient')">
       <option value="all">Todos os usuários</option>
-      <option *ngFor="let user of users" [value]="user.id">{{ user.fullName }} ({{ user.email }})</option>
+      <option *ngFor="let user of users()" [value]="user.id">{{ user.fullName }} ({{ user.email }})</option>
     </select>
   </div>
 

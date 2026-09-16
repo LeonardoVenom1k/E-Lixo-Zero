@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { CollectionPoint } from '../../../models/collection-point.model';
@@ -16,11 +16,11 @@ export class AdminCollectionPoints implements OnInit {
   private fb = inject(FormBuilder);
   private collectionPointsService = inject(CollectionPointsService);
 
-  points: CollectionPoint[] = [];
-  editingId: number | null = null;
-  showForm = false;
-  message = '';
-  error = '';
+  points = signal<CollectionPoint[]>([]);
+  editingId = signal<number | null>(null);
+  showForm = signal(false);
+  message = signal('');
+  error = signal('');
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -42,15 +42,15 @@ export class AdminCollectionPoints implements OnInit {
 
   load(): void {
     this.collectionPointsService.list().subscribe({
-      next: (points) => (this.points = points),
-      error: () => (this.error = 'Erro ao carregar pontos de coleta.'),
+      next: (points) => this.points.set(points),
+      error: () => this.error.set('Erro ao carregar pontos de coleta.'),
     });
   }
 
   startCreate(): void {
     this.clearMessages();
-    this.editingId = null;
-    this.showForm = true;
+    this.editingId.set(null);
+    this.showForm.set(true);
     this.form.reset({
       city: 'Santa Rita do Sapucaí',
       state: 'MG',
@@ -61,8 +61,8 @@ export class AdminCollectionPoints implements OnInit {
 
   startEdit(point: CollectionPoint): void {
     this.clearMessages();
-    this.editingId = point.id;
-    this.showForm = true;
+    this.editingId.set(point.id);
+    this.showForm.set(true);
     this.form.patchValue({
       name: point.name,
       street: point.street || '',
@@ -79,16 +79,16 @@ export class AdminCollectionPoints implements OnInit {
   }
 
   cancelForm(): void {
-    this.showForm = false;
-    this.editingId = null;
+    this.showForm.set(false);
+    this.editingId.set(null);
     this.clearMessages();
   }
 
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.message = '';
-      this.error = 'Preencha os campos obrigatórios.';
+      this.message.set('');
+      this.error.set('Preencha os campos obrigatórios.');
       return;
     }
 
@@ -112,18 +112,19 @@ export class AdminCollectionPoints implements OnInit {
       active: true,
     } as CollectionPoint;
 
-    const request = this.editingId
-      ? this.collectionPointsService.update(this.editingId, point)
+    const editingId = this.editingId();
+    const request = editingId
+      ? this.collectionPointsService.update(editingId, point)
       : this.collectionPointsService.create(point);
 
     request.subscribe({
       next: () => {
-        this.message = `Ponto de coleta ${this.editingId ? 'atualizado' : 'cadastrado'} com sucesso.`;
-        this.showForm = false;
-        this.editingId = null;
+        this.message.set(`Ponto de coleta ${editingId ? 'atualizado' : 'cadastrado'} com sucesso.`);
+        this.showForm.set(false);
+        this.editingId.set(null);
         this.load();
       },
-      error: () => (this.error = 'Erro ao salvar ponto de coleta.'),
+      error: () => this.error.set('Erro ao salvar ponto de coleta.'),
     });
   }
 
@@ -134,10 +135,10 @@ export class AdminCollectionPoints implements OnInit {
     this.clearMessages();
     this.collectionPointsService.delete(point.id).subscribe({
       next: () => {
-        this.message = 'Ponto de coleta excluído com sucesso.';
+        this.message.set('Ponto de coleta excluído com sucesso.');
         this.load();
       },
-      error: () => (this.error = 'Erro ao excluir ponto de coleta.'),
+      error: () => this.error.set('Erro ao excluir ponto de coleta.'),
     });
   }
 
@@ -147,7 +148,7 @@ export class AdminCollectionPoints implements OnInit {
   }
 
   private clearMessages(): void {
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
   }
 }

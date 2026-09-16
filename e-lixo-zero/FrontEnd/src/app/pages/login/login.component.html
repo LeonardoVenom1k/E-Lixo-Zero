@@ -43,8 +43,8 @@
       [(ngModel)]="password"
     />
 
-    <p class="error" *ngIf="error">
-      {{ error }}
+    <p class="error" *ngIf="error()">
+      {{ error() }}
     </p>
 
     <button

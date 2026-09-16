@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
@@ -18,7 +18,7 @@ export class LoginComponent {
 
   email = '';
   password = '';
-  error = '';
+  error = signal('');
 
   login(): void {
   console.log('EMAIL:', this.email);
@@ -29,15 +29,15 @@ export class LoginComponent {
       console.log('LOGIN RESULT:', valid);
 
       if (valid) {
-        this.error = '';
+        this.error.set('');
         this.router.navigate([this.auth.isAdmin() ? '/admin' : '/dashboard']);
       } else {
-        this.error = 'E-mail ou senha inválidos.';
+        this.error.set('E-mail ou senha inválidos.');
       }
     },
     error: (error) => {
       console.error('REQUEST ERROR:', error);
-      this.error = 'Erro ao conectar com a API.';
+      this.error.set('Erro ao conectar com a API.');
     },
   });
 }

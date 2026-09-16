@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -34,8 +34,8 @@ export class RequestPickup {
     initialValue: [] as WasteType[],
   });
 
-  message = '';
-  error = '';
+  message = signal('');
+  error = signal('');
 
   today = (() => {
     const agora = new Date();
@@ -80,13 +80,13 @@ export class RequestPickup {
   save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.message = '';
-      this.error = 'Verifique os campos destacados antes de agendar.';
+      this.message.set('');
+      this.error.set('Verifique os campos destacados antes de agendar.');
       return;
     }
 
-    this.message = '';
-    this.error = '';
+    this.message.set('');
+    this.error.set('');
 
     const pickup = {
       ...this.form.value,
@@ -96,7 +96,7 @@ export class RequestPickup {
     this.pickupsService.create(pickup as any).subscribe({
       next: (response) => {
         console.log('Pickup created successfully:', response);
-        this.message = 'Coleta agendada com sucesso!';
+        this.message.set('Coleta agendada com sucesso!');
 
         this.form.reset({
           quantity: 1,
@@ -106,7 +106,7 @@ export class RequestPickup {
       },
       error: (error) => {
         console.error('Error scheduling pickup:', error);
-        this.error = 'Erro ao agendar coleta. Tente novamente.';
+        this.error.set('Erro ao agendar coleta. Tente novamente.');
       },
     });
   }
