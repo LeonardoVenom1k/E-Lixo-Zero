@@ -1,0 +1,42 @@
+<div class="page-title">
+  <h1>Enviar Notificação</h1>
+  <p>Envie avisos para um usuário ou para todos.</p>
+</div>
+
+<div class="message success" *ngIf="message">{{ message }}</div>
+<div class="message error" *ngIf="error">{{ error }}</div>
+
+<form class="card form" [formGroup]="form" (ngSubmit)="send()">
+
+  <div class="field">
+    <label for="recipient">Destinatário <span class="required">*</span></label>
+    <select id="recipient" formControlName="recipient" [class.invalid]="isFieldInvalid('recipient')">
+      <option value="all">Todos os usuários</option>
+      <option *ngFor="let user of users" [value]="user.id">{{ user.fullName }} ({{ user.email }})</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="notificationType">Tipo <span class="required">*</span></label>
+    <select id="notificationType" formControlName="notificationType">
+      <option value="INFO">Informação</option>
+      <option value="TIP">Dica ambiental</option>
+      <option value="ALERT">Alerta</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="title">Título <span class="required">*</span></label>
+    <input id="title" type="text" maxlength="100" formControlName="title" [class.invalid]="isFieldInvalid('title')">
+  </div>
+
+  <div class="field">
+    <label for="message">Mensagem <span class="required">*</span></label>
+    <textarea id="message" rows="4" formControlName="message" [class.invalid]="isFieldInvalid('message')"></textarea>
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn-primary">Enviar notificação</button>
+  </div>
+
+</form>

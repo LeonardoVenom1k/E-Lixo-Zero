@@ -15,6 +15,12 @@ import { MainLayout } from './layouts/main-layout/main-layout';
 import { About } from './pages/about/about';
 import { HowItWorks } from './pages/how-it-works/how-it-works';
 import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
+import { AdminUsers } from './pages/admin/users/admin-users';
+import { AdminCollectionPoints } from './pages/admin/collection-points/admin-collection-points';
+import { AdminWasteTypes } from './pages/admin/waste-types/admin-waste-types';
+import { AdminPickups } from './pages/admin/pickups/admin-pickups';
+import { AdminNotifications } from './pages/admin/notifications/admin-notifications';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -35,6 +41,13 @@ export const routes: Routes = [
     { path: 'profile', component: Profile, canActivate: [authGuard] },
     { path: 'about', component: About },
 { path: 'how-it-works', component: HowItWorks },
+
+    { path: 'admin', redirectTo: 'admin/pickups', pathMatch: 'full' },
+    { path: 'admin/users', component: AdminUsers, canActivate: [adminGuard] },
+    { path: 'admin/collection-points', component: AdminCollectionPoints, canActivate: [adminGuard] },
+    { path: 'admin/waste-types', component: AdminWasteTypes, canActivate: [adminGuard] },
+    { path: 'admin/pickups', component: AdminPickups, canActivate: [adminGuard] },
+    { path: 'admin/notifications', component: AdminNotifications, canActivate: [adminGuard] },
   ],
 },
 
