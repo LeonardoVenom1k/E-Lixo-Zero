@@ -1,46 +1,47 @@
 # E-Lixo Zero
 
-Sistema web para facilitar o descarte correto de resíduos eletrônicos no município de Santa Rita do Sapucaí - MG.
+Sistema web para facilitar o descarte correto de resíduos eletrônicos em Santa Rita do Sapucaí - MG e região.
 
-## About o Projeto
+## Sobre o Projeto
 
-O E-Lixo Zero conecta cidadãos, points de pickup e gestores para promover o descarte consciente de resíduos eletrônicos e contribuir com a preservação ambiental.
+O E-Lixo Zero conecta cidadãos, pontos de coleta e gestores para promover o descarte consciente de resíduos eletrônicos e contribuir com a preservação ambiental.
 
-A plataforma permite localizar points de pickup, solicitar pickups residenciais, acompanhar agendamentos e receber notificações about ações de descarte sustentável.
+A plataforma permite localizar pontos de coleta (inclusive ordenados pela distância até o usuário), solicitar coletas residenciais, acompanhar agendamentos e receber notificações sobre ações de descarte sustentável.
 
 ## Objetivos
 
 - Incentivar o descarte correto de resíduos eletrônicos
-- Facilitar o acesso a points de pickup
-- Permitir o agendamento de pickups residenciais
+- Facilitar o acesso a pontos de coleta
+- Permitir o agendamento de coletas residenciais
 - Promover ações de conscientização ambiental
-- Centralizar informações about resíduos eletrônicos
+- Centralizar informações sobre resíduos eletrônicos
 
 ## Funcionalidades
 
 ### Áreas públicas
 
 - Página inicial
-- Página "About"
+- Página "Sobre"
 - Página "Como Funciona"
-- Visualização de points de pickup
-- Sign up de usuários
+- Visualização de pontos de coleta, com busca por cidade e ordenação por proximidade ("Usar minha localização")
+- Consulta de tipos de resíduos
+- Cadastro de usuários
 - Login de usuários
 
 ### Áreas restritas
 
 - Dashboard personalizado
-- Solicitação de pickup
-- Visualização das pickups realizadas
-- Gerenciamento de resíduos
-- Central de notificações
-- Profile do usuário
+- Solicitação de coleta
+- Visualização das coletas realizadas
+- Consulta de resíduos
+- Central de notificações (inclui notificação de boas-vindas automática no cadastro)
+- Perfil do usuário
 
 ## Tecnologias Utilizadas
 
 - **Front-end:** Angular 21, TypeScript, SCSS, HTML5
 - **Back-end:** Java 17, Spring Boot 3.5+, Spring Security (BCrypt), JWT
-- **Banco de details:** PostgreSQL
+- **Banco de dados:** PostgreSQL
 - **Ferramentas:** Maven, Node.js, npm, Git
 
 ## Estrutura do Projeto
@@ -58,6 +59,7 @@ E-Lixo-Zero/
 │   │   │   ├── ports_and_adapters/
 │   │   │   └── security/
 │   │   └── src/main/resources/
+│   │       └── lds-db-scripts/   (scripts de criação e carga inicial)
 │   └── FrontEnd/
 │       ├── src/app/
 │       │   ├── core/
@@ -68,15 +70,12 @@ E-Lixo-Zero/
 │       │   └── shared/
 │       ├── public/images/
 │       └── angular.json
-├── ApêndiceA-Planejamento/
-├── ApêndiceB-Requisitos/
-├── ApêndiceC-Análise/
-└── ApêndiceD-AnáliseDosRequisitos/
+└── docs/                          (documentação do projeto)
 ```
 
 ## Pré-requisitos
 
-- Java 17
+- Java 17+
 - Maven
 - PostgreSQL 14+
 - Node.js 20+
@@ -85,9 +84,9 @@ E-Lixo-Zero/
 
 ## Como Executar
 
-### 1. Configurar o banco de details
+### 1. Configurar o banco de dados
 
-1. Crie um banco de details chamado `elixozero` no PostgreSQL.
+1. Crie um banco de dados chamado `elixozero` no PostgreSQL.
 2. Ajuste as credenciais em `e-lixo-zero/BackEnd/src/main/resources/application.properties`:
 
 ```properties
@@ -96,7 +95,14 @@ spring.datasource.username=postgres
 spring.datasource.password=SUA_SENHA
 ```
 
-3. Execute os scripts SQL disponíveis em `src/main/resources/lds-db-scripts/`, se necessário.
+3. Execute os scripts SQL em `src/main/resources/lds-db-scripts/`, nesta ordem:
+   - `create-tables-postgres.sql` — cria as tabelas (recria do zero, apaga dados anteriores)
+   - `insert-data-postgres-basic.sql` — carga inicial: usuários de exemplo, tipos de resíduo, pontos de coleta em Santa Rita do Sapucaí e Cachoeira de Minas, coletas e notificações
+
+Usuários de exemplo (senha `123456` para ambos):
+
+- `joao@gmail.com` — Santa Rita do Sapucaí
+- `maria@gmail.com` — Cachoeira de Minas
 
 ### 2. Iniciar o back-end
 
@@ -119,13 +125,17 @@ A aplicação estará disponível em `http://localhost:4200`.
 
 ## Endpoints Principais
 
-- `POST /api/users` - Sign up de usuários
-- `POST /api/users/login` - Autenticação (retorna JWT)
-- `GET /api/collection-points` - Lista points de pickup
-- `GET /api/waste-types` - Lista tipos de resíduos
-- `GET /api/pickups` - Lista pickups do usuário autenticado
-- `POST /api/pickups` - Solicita uma created pickup
-- `GET /api/notifications` - Lista notificações do usuário
+- `POST /api/users` — cadastro de usuários (gera notificação de boas-vindas)
+- `POST /api/users/login` — autenticação (retorna JWT)
+- `GET /api/collection-points` — lista pontos de coleta
+- `GET /api/collection-points/city/{city}` — busca pontos por cidade/bairro/nome
+- `GET /api/collection-points/nearby?lat=..&lng=..` — pontos ordenados por distância
+- `GET /api/waste-types` — lista tipos de resíduos
+- `GET /api/pickups` — lista coletas do usuário autenticado
+- `POST /api/pickups` — solicita uma nova coleta
+- `PUT /api/pickups/{id}/status` — atualiza o status de uma coleta
+- `GET /api/notifications` — lista notificações do usuário
+- `PUT /api/notifications/{id}/mark-read` — marca notificação como lida
 
 ## Licença
 
