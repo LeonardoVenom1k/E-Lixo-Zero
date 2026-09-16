@@ -11,7 +11,7 @@
     <h3>Bem-vindo de volta!</h3>
 
     <p>
-      Faça login para acompanhar suas coletas, notificações e histórico de descarte.
+      Entre para acompanhar suas coletas, notificações e histórico de descarte.
     </p>
 
     <img
@@ -33,33 +33,33 @@
       [(ngModel)]="email"
     />
 
-    <label for="senha">Senha</label>
+    <label for="password">Senha</label>
 
     <input
-      id="senha"
+      id="password"
       class="form-input"
       type="password"
       placeholder="Digite sua senha"
-      [(ngModel)]="senha"
+      [(ngModel)]="password"
     />
 
-    <p class="erro" *ngIf="erro">
-      {{ erro }}
+    <p class="error" *ngIf="error">
+      {{ error }}
     </p>
 
     <button
       class="btn btn-primary full btn-space"
       type="button"
-      (click)="entrar()">
+      (click)="login()">
 
       Entrar
 
     </button>
 
     <p class="switch">
-      Ainda não possui uma conta?
+      Ainda não tem conta?
 
-      <a routerLink="/cadastro">
+      <a routerLink="/register">
         Cadastre-se
       </a>
     </p>

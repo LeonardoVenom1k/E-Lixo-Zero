@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { ColetasService } from '../../services/coletas';
-import { Usuario, UsuarioCompat } from '../../models/usuario.model';
+import { PickupsService } from '../../services/pickups';
+import { User, UserCompat } from '../../models/user.model';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,40 +14,40 @@ import { Usuario, UsuarioCompat } from '../../models/usuario.model';
   styleUrl: './dashboard.scss',
 })
 export class Dashboard {
-  private coletasService = inject(ColetasService);
+  private pickupsService = inject(PickupsService);
 
-  usuario: UsuarioCompat | null = (() => {
-    const usuarioSalvo = localStorage.getItem('usuarioLogado');
-    if (!usuarioSalvo) return null;
+  user: UserCompat | null = (() => {
+    const savedUser = localStorage.getItem('loggedInUser');
+    if (!savedUser) return null;
     
-    const usuario = JSON.parse(usuarioSalvo);
-    // Converter nomeCompleto para nome para compatibilidade
+    const user = JSON.parse(savedUser);
+    // Convert fullName to name for compatibility
     return {
-      ...usuario,
-      nome: usuario.nomeCompleto || usuario.nome || 'Usuário'
+      ...user,
+      name: user.fullName || user.name || 'User'
     };
   })();
 
-  coletas = toSignal(
-    this.coletasService.listar(),
+  pickups = toSignal(
+    this.pickupsService.list(),
     { initialValue: [] }
   );
 
-  totalAgendadas = computed(
-    () => this.coletas().filter(c => c.status === 'Agendada').length
+  totalScheduleds = computed(
+    () => this.pickups().filter(c => c.status === 'Scheduled').length
   );
 
-  totalAndamento = computed(
-    () => this.coletas().filter(c => c.status === 'Em Andamento').length
+  totalInProgress = computed(
+    () => this.pickups().filter(c => c.status === 'In Progress').length
   );
 
-  totalConcluidas = computed(
-    () => this.coletas().filter(c => c.status === 'Concluída').length
+  totalCompleted = computed(
+    () => this.pickups().filter(c => c.status === 'Completed').length
   );
 
-  totalResiduos = computed(
-    () => this.coletas().reduce(
-      (total, coleta) => total + Number(coleta.quantidade),
+  totalWaste = computed(
+    () => this.pickups().reduce(
+      (total, pickup) => total + Number(pickup.quantity),
       0
     )
   );

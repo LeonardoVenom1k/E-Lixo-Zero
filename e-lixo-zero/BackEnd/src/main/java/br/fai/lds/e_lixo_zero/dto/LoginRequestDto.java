@@ -3,7 +3,7 @@ package br.fai.lds.e_lixo_zero.dto;
 public class LoginRequestDto {
 
     private String email;
-    private String senha;
+    private String password;
 
     public String getEmail() {
         return email;
@@ -13,11 +13,11 @@ public class LoginRequestDto {
         this.email = email;
     }
 
-    public String getSenha() {
-        return senha;
+    public String getPassword() {
+        return password;
     }
 
-    public void setSenha(final String senha) {
-        this.senha = senha;
+    public void setPassword(final String password) {
+        this.password = password;
     }
 }

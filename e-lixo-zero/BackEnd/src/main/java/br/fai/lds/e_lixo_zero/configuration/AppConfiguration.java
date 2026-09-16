@@ -1,16 +1,16 @@
 package br.fai.lds.e_lixo_zero.configuration;
 
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.coleta.SolicitacaoColetaPostgresDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.notificacao.NotificacaoPostgresDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.ponto.PontoColetaPostgresDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.residuo.TipoResiduoPostgresDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.configuration.UserPostgresDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.usuario.UserFakeDaoAdapter;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.coleta.SolicitacaoColetaDao;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.notificacao.NotificacaoDao;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.ponto.PontoColetaDao;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.residuo.TipoResiduoDao;
-import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.usuario.UserDao;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.pickup.PickupRequestPostgresDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.notification.NotificationPostgresDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.collectionpoint.CollectionPointPostgresDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.wastetype.WasteTypePostgresDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.user.UserPostgresDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.adapter.dao.user.UserFakeDaoAdapter;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.pickup.PickupRequestDao;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.notification.NotificationDao;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.collectionpoint.CollectionPointDao;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.wastetype.WasteTypeDao;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.dao.user.UserDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -36,22 +36,22 @@ public class AppConfiguration {
     }
 
     @Bean
-    public TipoResiduoDao getTipoResiduoPostgresDao(final Connection connection) {
-        return new TipoResiduoPostgresDaoAdapter(connection);
+    public WasteTypeDao getWasteTypePostgresDao(final Connection connection) {
+        return new WasteTypePostgresDaoAdapter(connection);
     }
 
     @Bean
-    public PontoColetaDao getPontoColetaPostgresDao(final Connection connection) {
-        return new PontoColetaPostgresDaoAdapter(connection);
+    public CollectionPointDao getCollectionPointPostgresDao(final Connection connection) {
+        return new CollectionPointPostgresDaoAdapter(connection);
     }
 
     @Bean
-    public SolicitacaoColetaDao getSolicitacaoColetaPostgresDao(final Connection connection) {
-        return new SolicitacaoColetaPostgresDaoAdapter(connection);
+    public PickupRequestDao getPickupRequestPostgresDao(final Connection connection) {
+        return new PickupRequestPostgresDaoAdapter(connection);
     }
 
     @Bean
-    public NotificacaoDao getNotificacaoPostgresDao(final Connection connection) {
-        return new NotificacaoPostgresDaoAdapter(connection);
+    public NotificationDao getNotificationPostgresDao(final Connection connection) {
+        return new NotificationPostgresDaoAdapter(connection);
     }
 }

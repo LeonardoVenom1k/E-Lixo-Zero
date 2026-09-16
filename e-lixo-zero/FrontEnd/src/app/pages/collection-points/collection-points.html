@@ -1,0 +1,36 @@
+<div class="page-title">
+  <h1>Pontos de Coleta</h1>
+  <p>Encontre locais próximos para descartar seu lixo eletrônico.</p>
+</div>
+
+<section class="search-box">
+  <input type="text" [(ngModel)]="term" (keyup.enter)="search()" placeholder="Buscar por nome, cidade ou bairro..." />
+  <button (click)="search()">Buscar</button>
+  <button class="btn-map" type="button" (click)="useMyLocation()" [disabled]="locating()">
+    {{ locating() ? 'Localizando...' : 'Usar minha localização' }}
+  </button>
+</section>
+
+<p class="location-error" *ngIf="locationError()">{{ locationError() }}</p>
+
+<section class="grid-2">
+  <article class="card point-card"   *ngFor="let point of points()">
+    <div class="icon">📍</div>
+
+    <div>
+      <h2>{{ point.name }}</h2>
+      <p class="distance" *ngIf="point.distanceKm != null">
+        Aproximadamente {{ point.distanceKm | number:'1.1-1' }} km de você
+      </p>
+      <p><strong>Endereço:</strong> {{ point.address }}</p>
+      <p><strong>Horário:</strong> {{ point.openingHours }}</p>
+      <p><strong>Telefone:</strong> {{ point.phone }}</p>
+
+      <div class="tags">
+        @for (item of point.acceptedWastes; track item) {
+          <span>{{ item }}</span>
+        }
+      </div>
+    </div>
+  </article>
+</section>

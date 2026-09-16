@@ -1,0 +1,178 @@
+<div class="page-title">
+  <h1>Solicitar Coleta</h1>
+  <p>Preencha os dados abaixo para agendar sua coleta.</p>
+</div>
+
+<div class="request-container">
+
+  <form
+    class="card form"
+    [formGroup]="form"
+    (ngSubmit)="save()">
+
+    <div class="message success" *ngIf="message">
+      {{ message }}
+    </div>
+
+    <div class="message error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="field">
+      <label for="waste">Tipo de resíduo <span class="required">*</span></label>
+
+      <select id="waste" formControlName="waste" [class.invalid]="isFieldInvalid('waste')">
+        <option value="">Selecione o tipo de resíduo</option>
+
+        <option *ngFor="let waste of wasteTypes()" [value]="waste.name" >{{waste.name}}</option>
+      </select>
+
+      <small class="field-error" *ngIf="fieldError('waste')">{{ fieldError('waste') }}</small>
+    </div>
+
+    <div class="field">
+      <label for="quantity">Quantidade <span class="required">*</span></label>
+
+      <input
+        id="quantity"
+        type="number"
+        min="1"
+        formControlName="quantity"
+        [class.invalid]="isFieldInvalid('quantity')">
+
+      <small class="field-error" *ngIf="fieldError('quantity')">{{ fieldError('quantity') }}</small>
+    </div>
+
+    <div class="field">
+      <label for="street">Rua <span class="required">*</span></label>
+
+      <input
+        id="street"
+        type="text"
+        placeholder="Rua, Avenida, Praça..."
+        formControlName="street"
+        [class.invalid]="isFieldInvalid('street')">
+
+      <small class="field-error" *ngIf="fieldError('street')">{{ fieldError('street') }}</small>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="field">
+        <label for="number">Número <span class="required">*</span></label>
+
+        <input
+          id="number"
+          type="text"
+          placeholder="123"
+          formControlName="number"
+          [class.invalid]="isFieldInvalid('number')">
+
+        <small class="field-error" *ngIf="fieldError('number')">{{ fieldError('number') }}</small>
+      </div>
+
+      <div class="field">
+        <label for="neighborhood">Bairro <span class="required">*</span></label>
+
+        <input
+          id="neighborhood"
+          type="text"
+          placeholder="Centro"
+          formControlName="neighborhood"
+          [class.invalid]="isFieldInvalid('neighborhood')">
+
+        <small class="field-error" *ngIf="fieldError('neighborhood')">{{ fieldError('neighborhood') }}</small>
+      </div>
+
+    </div>
+
+    <div class="field">
+      <label for="city">Cidade <span class="required">*</span></label>
+
+      <input
+        id="city"
+        type="text"
+        formControlName="city"
+        [class.invalid]="isFieldInvalid('city')">
+
+      <small class="field-error" *ngIf="fieldError('city')">{{ fieldError('city') }}</small>
+    </div>
+
+    <div class="grid-2">
+
+      <div class="field">
+        <label for="date">Data desejada <span class="required">*</span></label>
+
+        <input
+          id="date"
+          type="date"
+          [min]="today"
+          formControlName="date"
+          [class.invalid]="isFieldInvalid('date')">
+
+        <small class="field-error" *ngIf="fieldError('date')">{{ fieldError('date') }}</small>
+      </div>
+
+      <div class="field">
+        <label for="period">Período <span class="required">*</span></label>
+
+        <select id="period" formControlName="period" [class.invalid]="isFieldInvalid('period')">
+          <option value="Manhã">Manhã</option>
+          <option value="Tarde">Tarde</option>
+          <option value="Noite">Noite</option>
+        </select>
+
+        <small class="field-error" *ngIf="fieldError('period')">{{ fieldError('period') }}</small>
+      </div>
+
+    </div>
+
+    <div class="actions">
+  <button
+    type="button"
+    class="btn-secondary"
+    routerLink="/dashboard">
+
+    Cancelar
+
+  </button>
+
+  <button
+    type="submit"
+    class="btn-primary">
+
+    Agendar Coleta
+
+  </button>
+</div>
+
+</form>
+
+<div class="card help">
+
+  <h2>Como funciona?</h2>
+
+  <div class="step">
+    <div>
+      <h4>Preencha os dados</h4>
+      <p>Informe o tipo de resíduo e o endereço de coleta.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div>
+      <h4>Aguarde a confirmação</h4>
+      <p>Nossa equipe vai validar o agendamento.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div>
+      <h4>Fazemos a coleta</h4>
+      <p>Recolhemos o resíduo no local informado.</p>
+    </div>
+  </div>
+
+</div>
+
+</div>

@@ -4,65 +4,65 @@ import { HttpClient } from '@angular/common/http';
 import { map, catchError } from 'rxjs';
 import { of } from 'rxjs';
 
-import { Usuario, UsuarioCompat } from '../models/usuario.model';
+import { User, UserCompat } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private api = 'http://localhost:8087/api/usuarios';
-  private chave = 'usuarioLogado';
-  private chaveToken = 'token';
+  private api = 'http://localhost:8087/api/users';
+  private userKey = 'loggedInUser';
+  private tokenKey = 'token';
 
-  login(email: string, senha: string) {
-    return this.http.post<any>(`${this.api}/login`, { email, senha }).pipe(
-      map((usuario) => {
-        console.log('Usuário recebido do backend:', usuario);
+  login(email: string, password: string) {
+    return this.http.post<any>(`${this.api}/login`, { email, password }).pipe(
+      map((user) => {
+        console.log('User received from backend:', user);
 
-        const usuarioCompat: UsuarioCompat = {
-          id: String(usuario.id),
-          nome: usuario.nomeCompleto,
-          email: usuario.email,
-          senha: '',
-          logradouro: usuario.logradouro || '',
-          numero: usuario.numero || '',
-          bairro: usuario.bairro || '',
-          cidade: usuario.cidade || ''
+        const userCompat: UserCompat = {
+          id: String(user.id),
+          name: user.fullName,
+          email: user.email,
+          password: '',
+          street: user.street || '',
+          number: user.number || '',
+          neighborhood: user.neighborhood || '',
+          city: user.city || ''
         };
 
-        localStorage.setItem(this.chave, JSON.stringify(usuarioCompat));
+        localStorage.setItem(this.userKey, JSON.stringify(userCompat));
 
-        if (usuario.token) {
-          localStorage.setItem(this.chaveToken, usuario.token);
+        if (user.token) {
+          localStorage.setItem(this.tokenKey, user.token);
         }
 
-        console.log('Usuário salvo no localStorage:', usuarioCompat);
+        console.log('User saved to localStorage:', userCompat);
         return true;
       }),
       catchError((error) => {
-        console.error('Erro no login:', error);
+        console.error('Login error:', error);
         console.error('Status:', error.status);
-        console.error('Mensagem:', error.message);
+        console.error('Message:', error.message);
         return of(false);
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem(this.chave);
-    localStorage.removeItem(this.chaveToken);
+    localStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.tokenKey);
   }
 
-  estaLogado(): boolean {
-    return localStorage.getItem(this.chave) !== null;
+  isLoggedIn(): boolean {
+    return localStorage.getItem(this.userKey) !== null;
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.chaveToken);
+    return localStorage.getItem(this.tokenKey);
   }
 
-  cadastrar(usuario: Omit<Usuario, 'id'>) {
-    return this.http.post<Usuario>(this.api, usuario);
+  register(user: Omit<User, 'id'>) {
+    return this.http.post<User>(this.api, user);
   }
 }

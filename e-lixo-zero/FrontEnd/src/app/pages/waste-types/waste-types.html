@@ -1,0 +1,39 @@
+<div class="page-title">
+  <h1>Tipos de Resíduos</h1>
+
+  <p>
+    Aprenda como descartar corretamente cada tipo de resíduo.
+  </p>
+</div>
+
+<div class="waste-grid">
+
+  <div class="card waste-card" *ngFor="let waste of wasteTypes()">
+
+    <div class="icon">
+      {{ getIcon(waste.name) }}
+    </div>
+
+    <h3>{{ waste.name }}</h3>
+
+    <span class="category">
+      {{ waste.category }}
+    </span>
+
+    <p>
+      {{ waste.description }}
+    </p>
+
+  </div>
+
+</div>
+
+<div class="card help">
+
+  <h2>Dúvidas?</h2>
+
+  <p>
+    Consulte os pontos de coleta mais próximos ou fale com nossa equipe.
+  </p>
+
+</div>

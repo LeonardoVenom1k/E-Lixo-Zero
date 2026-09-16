@@ -1,0 +1,49 @@
+<div class="page-title">
+  <h1>Perfil</h1>
+  <p>Veja suas informações cadastradas.</p>
+</div>
+
+<div class="card profile-card" *ngIf="user">
+  <div class="avatar">
+    {{ user.name.charAt(0) }}
+  </div>
+
+  <div>
+    <h2>{{ user.name }}</h2>
+    <p>{{ user.email }}</p>
+  </div>
+</div>
+
+<div class="card details" *ngIf="user">
+  <h3>Dados da conta</h3>
+
+  <div class="row">
+    <strong>Nome</strong>
+    <span>{{ user.name }}</span>
+  </div>
+
+  <div class="row">
+    <strong>E-mail</strong>
+    <span>{{ user.email }}</span>
+  </div>
+
+  <div class="row">
+    <strong>Rua</strong>
+    <span>{{ user.street }}</span>
+  </div>
+
+  <div class="row">
+    <strong>Número</strong>
+    <span>{{ user.number }}</span>
+  </div>
+
+  <div class="row">
+    <strong>Bairro</strong>
+    <span>{{ user.neighborhood }}</span>
+  </div>
+
+  <div class="row">
+    <strong>Cidade</strong>
+    <span>{{ user.city }}</span>
+  </div>
+</div>

@@ -58,16 +58,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private boolean isPublicPath(final String path, final String method) {
-        if (path.startsWith("/api/usuarios/login")) {
+        if (path.startsWith("/api/users/login")) {
             return true;
         }
-        if ("/api/usuarios".equals(path) && "POST".equalsIgnoreCase(method)) {
+        if ("/api/users".equals(path) && "POST".equalsIgnoreCase(method)) {
             return true;
         }
-        if (path.startsWith("/api/residuos") && "GET".equalsIgnoreCase(method)) {
+        if (path.startsWith("/api/waste-types") && "GET".equalsIgnoreCase(method)) {
             return true;
         }
-        if (path.startsWith("/api/pontos-coleta") && "GET".equalsIgnoreCase(method)) {
+        if (path.startsWith("/api/collection-points") && "GET".equalsIgnoreCase(method)) {
             return true;
         }
         return path.startsWith("/h2-console");

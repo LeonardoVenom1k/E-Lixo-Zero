@@ -1,0 +1,45 @@
+<div class="page-title">
+  <h1>Minhas Coletas</h1>
+  <p>Acompanhe o status das suas solicitações.</p>
+</div>
+
+<div class="list">
+
+  <div class="card pickup-card" *ngFor="let pickup of (pickups$ | async) ?? []">
+
+    <div class="info">
+
+      <h3>{{ pickup.waste }}</h3>
+
+      <p>
+        {{ pickup.street }},
+        {{ pickup.number }}
+      </p>
+
+      <p>
+        {{ pickup.neighborhood }} -
+        {{ pickup.city }}
+      </p>
+
+      <p>
+        {{ pickup.date }} •
+        {{ pickup.period }}
+      </p>
+
+    </div>
+
+    <div
+      class="status"
+      [ngClass]="{
+        'scheduled': pickup.status === 'Scheduled',
+        'in-progress': pickup.status === 'In Progress',
+        'completed': pickup.status === 'Completed'
+      }">
+
+      {{ statusLabel(pickup.status) }}
+
+    </div>
+
+  </div>
+
+</div>

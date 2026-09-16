@@ -3,16 +3,16 @@ package br.fai.lds.e_lixo_zero.dto;
 public class LoginResponseDto {
 
     private int id;
-    private String nomeCompleto;
+    private String fullName;
     private String email;
     private String cpf;
-    private String telefone;
-    private String logradouro;
-    private String numero;
-    private String bairro;
-    private String cidade;
-    private String estado;
-    private String tipoUsuario;
+    private String phone;
+    private String street;
+    private String number;
+    private String neighborhood;
+    private String city;
+    private String state;
+    private String userType;
     private String token;
 
     public int getId() {
@@ -23,12 +23,12 @@ public class LoginResponseDto {
         this.id = id;
     }
 
-    public String getNomeCompleto() {
-        return nomeCompleto;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setNomeCompleto(final String nomeCompleto) {
-        this.nomeCompleto = nomeCompleto;
+    public void setFullName(final String fullName) {
+        this.fullName = fullName;
     }
 
     public String getEmail() {
@@ -47,60 +47,60 @@ public class LoginResponseDto {
         this.cpf = cpf;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTelefone(final String telefone) {
-        this.telefone = telefone;
+    public void setPhone(final String phone) {
+        this.phone = phone;
     }
 
-    public String getLogradouro() {
-        return logradouro;
+    public String getStreet() {
+        return street;
     }
 
-    public void setLogradouro(final String logradouro) {
-        this.logradouro = logradouro;
+    public void setStreet(final String street) {
+        this.street = street;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getNumber() {
+        return number;
     }
 
-    public void setNumero(final String numero) {
-        this.numero = numero;
+    public void setNumber(final String number) {
+        this.number = number;
     }
 
-    public String getBairro() {
-        return bairro;
+    public String getNeighborhood() {
+        return neighborhood;
     }
 
-    public void setBairro(final String bairro) {
-        this.bairro = bairro;
+    public void setNeighborhood(final String neighborhood) {
+        this.neighborhood = neighborhood;
     }
 
-    public String getCidade() {
-        return cidade;
+    public String getCity() {
+        return city;
     }
 
-    public void setCidade(final String cidade) {
-        this.cidade = cidade;
+    public void setCity(final String city) {
+        this.city = city;
     }
 
-    public String getEstado() {
-        return estado;
+    public String getState() {
+        return state;
     }
 
-    public void setEstado(final String estado) {
-        this.estado = estado;
+    public void setState(final String state) {
+        this.state = state;
     }
 
-    public String getTipoUsuario() {
-        return tipoUsuario;
+    public String getUserType() {
+        return userType;
     }
 
-    public void setTipoUsuario(final String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public void setUserType(final String userType) {
+        this.userType = userType;
     }
 
     public String getToken() {

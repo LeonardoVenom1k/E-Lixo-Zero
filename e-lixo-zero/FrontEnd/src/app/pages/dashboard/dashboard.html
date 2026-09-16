@@ -1,33 +1,33 @@
 <div class="page-header">
   <div>
-    <h1>Olá, {{ usuario?.nome }}! 👋</h1>
-    <p>Que bom ter você por aqui.</p>
+    <h1>Olá, {{ user?.name }}! 👋</h1>
+    <p>Que bom ter você aqui.</p>
   </div>
 
   <div class="user">
     <span>🔔</span>
-    <strong>{{ usuario?.nome }}</strong>
+    <strong>{{ user?.name }}</strong>
   </div>
 </div>
 
 <section class="stats">
   <div>
-    <strong>{{ totalAgendadas() }}</strong>
+    <strong>{{ totalScheduleds() }}</strong>
     <span>Coletas Agendadas</span>
   </div>
 
   <div>
-    <strong>{{ totalAndamento() }}</strong>
+    <strong>{{ totalInProgress() }}</strong>
     <span>Em Andamento</span>
   </div>
 
   <div>
-    <strong>{{ totalConcluidas() }}</strong>
+    <strong>{{ totalCompleted() }}</strong>
     <span>Concluídas</span>
   </div>
 
   <div>
-    <strong>{{ totalResiduos() }} itens</strong>
+    <strong>{{ totalWaste() }} itens</strong>
     <span>Resíduos Registrados</span>
   </div>
 </section>
@@ -35,7 +35,7 @@
 <h2>Ações rápidas</h2>
 
 <section class="actions">
-  <a routerLink="/solicitar-coleta" class="action-card">
+  <a routerLink="/request-pickup" class="action-card">
     <span>🗓️</span>
     <div>
       <strong>Solicitar Coleta</strong>
@@ -43,7 +43,7 @@
     </div>
   </a>
 
-  <a routerLink="/pontos-coleta" class="action-card">
+  <a routerLink="/collection-points" class="action-card">
     <span>📍</span>
     <div>
       <strong>Ver Pontos de Coleta</strong>
@@ -51,27 +51,27 @@
     </div>
   </a>
 
-  <a routerLink="/minhas-coletas" class="action-card">
+  <a routerLink="/my-pickups" class="action-card">
     <span>🚛</span>
     <div>
       <strong>Minhas Coletas</strong>
-      <p>Acompanhe seus pedidos</p>
+      <p>Acompanhe suas solicitações</p>
     </div>
   </a>
 
-  <a routerLink="/residuos" class="action-card">
+  <a routerLink="/waste-types" class="action-card">
     <span>♻️</span>
     <div>
-      <strong>Consultar Resíduos</strong>
-      <p>Saiba como descartar</p>
+      <strong>Tipos de Resíduos</strong>
+      <p>Aprenda como descartar</p>
     </div>
   </a>
 </section>
 
 <section class="tip">
   <div>
-    <h3>Dica sustentável 🌱</h3>
-    <p>Pequenas atitudes fazem uma grande diferença!</p>
+    <h3>Dica de sustentabilidade 🌱</h3>
+    <p>Pequenas ações fazem uma grande diferença!</p>
   </div>
 
   <span>

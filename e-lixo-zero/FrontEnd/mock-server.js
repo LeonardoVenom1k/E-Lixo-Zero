@@ -13,254 +13,254 @@ const dbPath = path.join(__dirname, 'db.json');
 const raw = fs.readFileSync(dbPath, 'utf8');
 const db = JSON.parse(raw);
 
-function findById(lista, id) {
-  return lista.find((item) => item.id == id);
+function findById(list, id) {
+  return list.find((item) => item.id == id);
 }
 
-function nextId(lista) {
-  if (!lista || lista.length === 0) return 1;
-  const max = Math.max(...lista.map((item) => Number(item.id) || 0));
+function nextId(list) {
+  if (!list || list.length === 0) return 1;
+  const max = Math.max(...list.map((item) => Number(item.id) || 0));
   return max + 1;
 }
 
-function dataHoje() {
-  const hoje = new Date();
-  return hoje.toISOString().split('T')[0];
+function today() {
+  const today = new Date();
+  return today.toISOString().split('T')[0];
 }
 
-// USUARIOS
+// USERS
 
-app.post('/api/usuarios/login', (req, res) => {
-  const { email, senha } = req.body;
-  const usuario = db.usuarios.find((u) => u.email === email && u.senha === senha);
+app.post('/api/users/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = db.users.find((u) => u.email === email && u.password === password);
 
-  if (!usuario) {
-    return res.status(401).json({ message: 'E-mail ou senha inválidos' });
+  if (!user) {
+    return res.status(401).json({ message: 'Invalid email or password' });
   }
 
   res.json({
-    id: usuario.id,
-    nomeCompleto: usuario.nomeCompleto,
-    email: usuario.email,
-    cpf: usuario.cpf || '',
-    telefone: usuario.telefone || '',
-    logradouro: usuario.logradouro || '',
-    numero: usuario.numero || '',
-    bairro: usuario.bairro || '',
-    cidade: usuario.cidade || '',
-    estado: usuario.estado || 'MG',
-    tipoUsuario: usuario.tipoUsuario || 'CIDADAO',
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    cpf: user.cpf || '',
+    phone: user.phone || '',
+    street: user.street || '',
+    number: user.number || '',
+    neighborhood: user.neighborhood || '',
+    city: user.city || '',
+    state: user.state || 'MG',
+    userType: user.userType || 'CITIZEN',
     token: 'mock-token',
   });
 });
 
-app.get('/api/usuarios', (req, res) => {
-  res.json(db.usuarios);
+app.get('/api/users', (req, res) => {
+  res.json(db.users);
 });
 
-app.get('/api/usuarios/:id', (req, res) => {
-  const usuario = findById(db.usuarios, req.params.id);
-  if (!usuario) return res.status(404).json({ message: 'Usuário não encontrado' });
-  res.json(usuario);
+app.get('/api/users/:id', (req, res) => {
+  const user = findById(db.users, req.params.id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+  res.json(user);
 });
 
-app.post('/api/usuarios', (req, res) => {
-  const novo = { ...req.body, id: nextId(db.usuarios) };
-  db.usuarios.push(novo);
-  res.status(201).json(novo);
+app.post('/api/users', (req, res) => {
+  const created = { ...req.body, id: nextId(db.users) };
+  db.users.push(created);
+  res.status(201).json(created);
 });
 
-app.put('/api/usuarios/:id', (req, res) => {
-  const index = db.usuarios.findIndex((u) => u.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Usuário não encontrado' });
-  db.usuarios[index] = { ...req.body, id: db.usuarios[index].id };
-  res.json(db.usuarios[index]);
+app.put('/api/users/:id', (req, res) => {
+  const index = db.users.findIndex((u) => u.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'User not found' });
+  db.users[index] = { ...req.body, id: db.users[index].id };
+  res.json(db.users[index]);
 });
 
-app.delete('/api/usuarios/:id', (req, res) => {
-  const index = db.usuarios.findIndex((u) => u.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Usuário não encontrado' });
-  db.usuarios.splice(index, 1);
+app.delete('/api/users/:id', (req, res) => {
+  const index = db.users.findIndex((u) => u.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'User not found' });
+  db.users.splice(index, 1);
   res.status(204).send();
 });
 
-// PONTOS DE COLETA
+// COLLECTION POINTS
 
-app.get('/api/pontos-coleta', (req, res) => {
-  res.json(db['pontos-coleta']);
+app.get('/api/collection-points', (req, res) => {
+  res.json(db['collection-points']);
 });
 
-app.get('/api/pontos-coleta/cidade/:cidade', (req, res) => {
-  res.json(db['pontos-coleta']);
+app.get('/api/collection-points/city/:city', (req, res) => {
+  res.json(db['collection-points']);
 });
 
-app.get('/api/pontos-coleta/:id', (req, res) => {
-  const ponto = findById(db['pontos-coleta'], req.params.id);
-  if (!ponto) return res.status(404).json({ message: 'Ponto de coleta não encontrado' });
-  res.json(ponto);
+app.get('/api/collection-points/:id', (req, res) => {
+  const point = findById(db['collection-points'], req.params.id);
+  if (!point) return res.status(404).json({ message: 'Collection point not found' });
+  res.json(point);
 });
 
-app.post('/api/pontos-coleta', (req, res) => {
-  const novo = { ...req.body, id: nextId(db['pontos-coleta']) };
-  db['pontos-coleta'].push(novo);
-  res.status(201).json(novo);
+app.post('/api/collection-points', (req, res) => {
+  const created = { ...req.body, id: nextId(db['collection-points']) };
+  db['collection-points'].push(created);
+  res.status(201).json(created);
 });
 
-app.put('/api/pontos-coleta/:id', (req, res) => {
-  const lista = db['pontos-coleta'];
-  const index = lista.findIndex((p) => p.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Ponto de coleta não encontrado' });
-  lista[index] = { ...req.body, id: lista[index].id };
-  res.json(lista[index]);
+app.put('/api/collection-points/:id', (req, res) => {
+  const list = db['collection-points'];
+  const index = list.findIndex((p) => p.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Collection point not found' });
+  list[index] = { ...req.body, id: list[index].id };
+  res.json(list[index]);
 });
 
-app.delete('/api/pontos-coleta/:id', (req, res) => {
-  const lista = db['pontos-coleta'];
-  const index = lista.findIndex((p) => p.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Ponto de coleta não encontrado' });
-  lista.splice(index, 1);
+app.delete('/api/collection-points/:id', (req, res) => {
+  const list = db['collection-points'];
+  const index = list.findIndex((p) => p.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Collection point not found' });
+  list.splice(index, 1);
   res.status(204).send();
 });
 
-// RESIDUOS
+// WASTE TYPES
 
-app.get('/api/residuos', (req, res) => {
-  res.json(db.residuos);
+app.get('/api/waste-types', (req, res) => {
+  res.json(db.wasteTypes);
 });
 
-app.get('/api/residuos/categoria/:categoria', (req, res) => {
-  const filtrados = db.residuos.filter((r) => r.categoria === req.params.categoria);
-  res.json(filtrados);
+app.get('/api/waste-types/category/:category', (req, res) => {
+  const filtered = db.wasteTypes.filter((r) => r.category === req.params.category);
+  res.json(filtered);
 });
 
-app.get('/api/residuos/:id', (req, res) => {
-  const residuo = findById(db.residuos, req.params.id);
-  if (!residuo) return res.status(404).json({ message: 'Resíduo não encontrado' });
-  res.json(residuo);
+app.get('/api/waste-types/:id', (req, res) => {
+  const waste = findById(db.wasteTypes, req.params.id);
+  if (!waste) return res.status(404).json({ message: 'Waste type not found' });
+  res.json(waste);
 });
 
-app.post('/api/residuos', (req, res) => {
-  const novo = { ...req.body, id: nextId(db.residuos) };
-  db.residuos.push(novo);
-  res.status(201).json(novo);
+app.post('/api/waste-types', (req, res) => {
+  const created = { ...req.body, id: nextId(db.wasteTypes) };
+  db.wasteTypes.push(created);
+  res.status(201).json(created);
 });
 
-app.put('/api/residuos/:id', (req, res) => {
-  const index = db.residuos.findIndex((r) => r.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Resíduo não encontrado' });
-  db.residuos[index] = { ...req.body, id: db.residuos[index].id };
-  res.json(db.residuos[index]);
+app.put('/api/waste-types/:id', (req, res) => {
+  const index = db.wasteTypes.findIndex((r) => r.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Waste type not found' });
+  db.wasteTypes[index] = { ...req.body, id: db.wasteTypes[index].id };
+  res.json(db.wasteTypes[index]);
 });
 
-app.delete('/api/residuos/:id', (req, res) => {
-  const index = db.residuos.findIndex((r) => r.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Resíduo não encontrado' });
-  db.residuos.splice(index, 1);
+app.delete('/api/waste-types/:id', (req, res) => {
+  const index = db.wasteTypes.findIndex((r) => r.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Waste type not found' });
+  db.wasteTypes.splice(index, 1);
   res.status(204).send();
 });
 
-// COLETAS
+// PICKUPS
 
-app.get('/api/coletas', (req, res) => {
-  res.json(db.coletas);
+app.get('/api/pickups', (req, res) => {
+  res.json(db.pickups);
 });
 
-app.get('/api/coletas/:id', (req, res) => {
-  const coleta = findById(db.coletas, req.params.id);
-  if (!coleta) return res.status(404).json({ message: 'Coleta não encontrada' });
-  res.json(coleta);
+app.get('/api/pickups/:id', (req, res) => {
+  const pickup = findById(db.pickups, req.params.id);
+  if (!pickup) return res.status(404).json({ message: 'Pickup not found' });
+  res.json(pickup);
 });
 
-app.post('/api/coletas', (req, res) => {
-  const nova = { ...req.body, id: String(nextId(db.coletas)) };
-  db.coletas.push(nova);
+app.post('/api/pickups', (req, res) => {
+  const created = { ...req.body, id: String(nextId(db.pickups)) };
+  db.pickups.push(created);
 
-  const residuoNome = req.body.residuo || 'Resíduo';
-  const dataFormatada = req.body.data ? req.body.data.split('-').reverse().join('/') : dataHoje();
-  const periodo = req.body.periodo || 'Manhã';
+  const wasteName = req.body.waste || 'Resíduo';
+  const formattedDate = req.body.date ? req.body.date.split('-').reverse().join('/') : today();
+  const period = req.body.period || 'Morning';
 
-  db.notificacoes.push({
-    id: nextId(db.notificacoes),
-    usuarioId: req.body.usuarioId || 1,
-    titulo: 'Coleta confirmada',
-    mensagem: `Sua coleta de ${residuoNome} foi agendada para ${dataFormatada} no período da ${periodo.toLowerCase()}.`,
-    tipoNotificacao: 'INFORMATIVA',
-    lida: false,
-    dataEnvio: dataHoje(),
-    data: dataHoje(),
+  db.notifications.push({
+    id: nextId(db.notifications),
+    userId: req.body.userId || 1,
+    title: 'Pickup confirmed',
+    message: `Sua pickup de ${wasteName} foi scheduled para ${formattedDate} no período da ${period.toLowerCase()}.`,
+    notificationType: 'INFO',
+    read: false,
+    sentAt: today(),
+    date: today(),
   });
 
-  res.status(201).json(nova);
+  res.status(201).json(created);
 });
 
-app.put('/api/coletas/:id/status', (req, res) => {
-  const index = db.coletas.findIndex((c) => c.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Coleta não encontrada' });
-  db.coletas[index].status = req.body.status;
-  res.json(db.coletas[index]);
+app.put('/api/pickups/:id/status', (req, res) => {
+  const index = db.pickups.findIndex((c) => c.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Pickup not found' });
+  db.pickups[index].status = req.body.status;
+  res.json(db.pickups[index]);
 });
 
-app.put('/api/coletas/:id', (req, res) => {
-  const index = db.coletas.findIndex((c) => c.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Coleta não encontrada' });
-  db.coletas[index] = { ...req.body, id: db.coletas[index].id };
-  res.json(db.coletas[index]);
+app.put('/api/pickups/:id', (req, res) => {
+  const index = db.pickups.findIndex((c) => c.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Pickup not found' });
+  db.pickups[index] = { ...req.body, id: db.pickups[index].id };
+  res.json(db.pickups[index]);
 });
 
-app.delete('/api/coletas/:id', (req, res) => {
-  const index = db.coletas.findIndex((c) => c.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Coleta não encontrada' });
-  db.coletas.splice(index, 1);
+app.delete('/api/pickups/:id', (req, res) => {
+  const index = db.pickups.findIndex((c) => c.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Pickup not found' });
+  db.pickups.splice(index, 1);
   res.status(204).send();
 });
 
-// NOTIFICACOES
+// NOTIFICATIONS
 
-app.get('/api/notificacoes', (req, res) => {
-  res.json(db.notificacoes);
+app.get('/api/notifications', (req, res) => {
+  res.json(db.notifications);
 });
 
-app.get('/api/notificacoes/usuario/:usuarioId/nao-lidas', (req, res) => {
-  res.json(db.notificacoes.filter((n) => !n.lida));
+app.get('/api/notifications/user/:userId/unread', (req, res) => {
+  res.json(db.notifications.filter((n) => !n.read));
 });
 
-app.get('/api/notificacoes/usuario/:usuarioId', (req, res) => {
-  res.json(db.notificacoes);
+app.get('/api/notifications/user/:userId', (req, res) => {
+  res.json(db.notifications);
 });
 
-app.get('/api/notificacoes/:id', (req, res) => {
-  const notificacao = findById(db.notificacoes, req.params.id);
-  if (!notificacao) return res.status(404).json({ message: 'Notificação não encontrada' });
-  res.json(notificacao);
+app.get('/api/notifications/:id', (req, res) => {
+  const notification = findById(db.notifications, req.params.id);
+  if (!notification) return res.status(404).json({ message: 'Notification not found' });
+  res.json(notification);
 });
 
-app.post('/api/notificacoes', (req, res) => {
-  const nova = { ...req.body, id: nextId(db.notificacoes) };
-  db.notificacoes.push(nova);
-  res.status(201).json(nova);
+app.post('/api/notifications', (req, res) => {
+  const created = { ...req.body, id: nextId(db.notifications) };
+  db.notifications.push(created);
+  res.status(201).json(created);
 });
 
-app.put('/api/notificacoes/:id/marcar-lida', (req, res) => {
-  const index = db.notificacoes.findIndex((n) => n.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Notificação não encontrada' });
-  db.notificacoes[index].lida = true;
-  res.json(db.notificacoes[index]);
+app.put('/api/notifications/:id/mark-read', (req, res) => {
+  const index = db.notifications.findIndex((n) => n.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Notification not found' });
+  db.notifications[index].read = true;
+  res.json(db.notifications[index]);
 });
 
-app.put('/api/notificacoes/:id', (req, res) => {
-  const index = db.notificacoes.findIndex((n) => n.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Notificação não encontrada' });
-  db.notificacoes[index] = { ...req.body, id: db.notificacoes[index].id };
-  res.json(db.notificacoes[index]);
+app.put('/api/notifications/:id', (req, res) => {
+  const index = db.notifications.findIndex((n) => n.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Notification not found' });
+  db.notifications[index] = { ...req.body, id: db.notifications[index].id };
+  res.json(db.notifications[index]);
 });
 
-app.delete('/api/notificacoes/:id', (req, res) => {
-  const index = db.notificacoes.findIndex((n) => n.id == req.params.id);
-  if (index < 0) return res.status(404).json({ message: 'Notificação não encontrada' });
-  db.notificacoes.splice(index, 1);
+app.delete('/api/notifications/:id', (req, res) => {
+  const index = db.notifications.findIndex((n) => n.id == req.params.id);
+  if (index < 0) return res.status(404).json({ message: 'Notification not found' });
+  db.notifications.splice(index, 1);
   res.status(204).send();
 });
 
 app.listen(PORT, () => {
-  console.log(`Mock server rodando em http://localhost:${PORT}`);
+  console.log(`Mock server running at http://localhost:${PORT}`);
 });

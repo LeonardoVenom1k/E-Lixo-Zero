@@ -1,0 +1,41 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.pickup-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info h3 {
+  margin-bottom: 12px;
+}
+
+.info p {
+  margin: 6px 0;
+  color: #64748b;
+}
+
+.status {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.scheduled {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.in-progress {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.completed {
+  background: #dcfce7;
+  color: #15803d;
+}

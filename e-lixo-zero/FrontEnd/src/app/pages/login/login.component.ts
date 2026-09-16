@@ -17,27 +17,27 @@ export class LoginComponent {
   private router = inject(Router);
 
   email = '';
-  senha = '';
-  erro = '';
+  password = '';
+  error = '';
 
-  entrar(): void {
+  login(): void {
   console.log('EMAIL:', this.email);
-  console.log('SENHA:', this.senha);
+  console.log('PASSWORD:', this.password);
 
-  this.auth.login(this.email.trim(), this.senha.trim()).subscribe({
-    next: (valido) => {
-      console.log('RESULTADO LOGIN:', valido);
+  this.auth.login(this.email.trim(), this.password.trim()).subscribe({
+    next: (valid) => {
+      console.log('LOGIN RESULT:', valid);
 
-      if (valido) {
-        this.erro = '';
+      if (valid) {
+        this.error = '';
         this.router.navigate(['/dashboard']);
       } else {
-        this.erro = 'E-mail ou senha inválidos.';
+        this.error = 'E-mail ou senha inválidos.';
       }
     },
-    error: (erro) => {
-      console.error('ERRO NA REQUISIÇÃO:', erro);
-      this.erro = 'Erro ao conectar com a API.';
+    error: (error) => {
+      console.error('REQUEST ERROR:', error);
+      this.error = 'Erro ao conectar com a API.';
     },
   });
 }

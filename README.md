@@ -2,45 +2,45 @@
 
 Sistema web para facilitar o descarte correto de resíduos eletrônicos no município de Santa Rita do Sapucaí - MG.
 
-## Sobre o Projeto
+## About o Projeto
 
-O E-Lixo Zero conecta cidadãos, pontos de coleta e gestores para promover o descarte consciente de resíduos eletrônicos e contribuir com a preservação ambiental.
+O E-Lixo Zero conecta cidadãos, points de pickup e gestores para promover o descarte consciente de resíduos eletrônicos e contribuir com a preservação ambiental.
 
-A plataforma permite localizar pontos de coleta, solicitar coletas residenciais, acompanhar agendamentos e receber notificações sobre ações de descarte sustentável.
+A plataforma permite localizar points de pickup, solicitar pickups residenciais, acompanhar agendamentos e receber notificações about ações de descarte sustentável.
 
 ## Objetivos
 
 - Incentivar o descarte correto de resíduos eletrônicos
-- Facilitar o acesso a pontos de coleta
-- Permitir o agendamento de coletas residenciais
+- Facilitar o acesso a points de pickup
+- Permitir o agendamento de pickups residenciais
 - Promover ações de conscientização ambiental
-- Centralizar informações sobre resíduos eletrônicos
+- Centralizar informações about resíduos eletrônicos
 
 ## Funcionalidades
 
 ### Áreas públicas
 
 - Página inicial
-- Página "Sobre"
+- Página "About"
 - Página "Como Funciona"
-- Visualização de pontos de coleta
-- Cadastro de usuários
+- Visualização de points de pickup
+- Sign up de usuários
 - Login de usuários
 
 ### Áreas restritas
 
 - Dashboard personalizado
-- Solicitação de coleta
-- Visualização das coletas realizadas
+- Solicitação de pickup
+- Visualização das pickups realizadas
 - Gerenciamento de resíduos
 - Central de notificações
-- Perfil do usuário
+- Profile do usuário
 
 ## Tecnologias Utilizadas
 
 - **Front-end:** Angular 21, TypeScript, SCSS, HTML5
 - **Back-end:** Java 17, Spring Boot 3.5+, Spring Security (BCrypt), JWT
-- **Banco de dados:** PostgreSQL
+- **Banco de details:** PostgreSQL
 - **Ferramentas:** Maven, Node.js, npm, Git
 
 ## Estrutura do Projeto
@@ -85,9 +85,9 @@ E-Lixo-Zero/
 
 ## Como Executar
 
-### 1. Configurar o banco de dados
+### 1. Configurar o banco de details
 
-1. Crie um banco de dados chamado `elixozero` no PostgreSQL.
+1. Crie um banco de details chamado `elixozero` no PostgreSQL.
 2. Ajuste as credenciais em `e-lixo-zero/BackEnd/src/main/resources/application.properties`:
 
 ```properties
@@ -119,13 +119,13 @@ A aplicação estará disponível em `http://localhost:4200`.
 
 ## Endpoints Principais
 
-- `POST /api/usuarios` - Cadastro de usuários
-- `POST /api/usuarios/login` - Autenticação (retorna JWT)
-- `GET /api/pontos-coleta` - Lista pontos de coleta
-- `GET /api/residuos` - Lista tipos de resíduos
-- `GET /api/coletas` - Lista coletas do usuário autenticado
-- `POST /api/coletas` - Solicita uma nova coleta
-- `GET /api/notificacoes` - Lista notificações do usuário
+- `POST /api/users` - Sign up de usuários
+- `POST /api/users/login` - Autenticação (retorna JWT)
+- `GET /api/collection-points` - Lista points de pickup
+- `GET /api/waste-types` - Lista tipos de resíduos
+- `GET /api/pickups` - Lista pickups do usuário autenticado
+- `POST /api/pickups` - Solicita uma created pickup
+- `GET /api/notifications` - Lista notificações do usuário
 
 ## Licença
 

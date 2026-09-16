@@ -13,7 +13,7 @@ import java.util.Date;
 @Service
 public class JwtTokenService {
 
-    @Value("${jwt.secret:elixo-zero-secret-key-trocar-em-producao-1234567890}")
+    @Value("${jwt.secret:elixo-zero-secret-key-change-in-production-1234567890}")
     private String secret;
 
     @Value("${jwt.expiration:86400000}")

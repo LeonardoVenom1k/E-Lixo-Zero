@@ -1,0 +1,16 @@
+<div class="page-title">
+  <h1>Notificações</h1>
+  <p>Acompanhe novidades sobre suas coletas.</p>
+</div>
+
+<div class="list">
+  <div class="card notification" *ngFor="let notification of (notifications$ | async) ?? []">
+    <div class="icon">🔔</div>
+
+    <div class="content">
+      <h3>{{ notification.title }}</h3>
+      <p>{{ notification.message }}</p>
+      <span>{{ notification.sentAt }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+.search-box {
+  margin-bottom: 26px;
+  display: flex;
+  gap: 14px;
+}
+
+.search-box input {
+  flex: 1;
+  height: 54px;
+  border: 1px solid #d6d6d6;
+  border-radius: 10px;
+  padding: 0 16px;
+  font-size: 17px;
+}
+
+.search-box button,
+.btn-map {
+  border: 0;
+  border-radius: 10px;
+  background: #178c3b;
+  color: white;
+  font-weight: 700;
+  padding: 0 24px;
+  cursor: pointer;
+}
+
+.point-card {
+  display: flex;
+  gap: 18px;
+}
+
+.icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #eaf5ec;
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.point-card h2 {
+  margin: 0 0 14px;
+  font-size: 24px;
+}
+
+.point-card p {
+  margin: 8px 0;
+  font-size: 17px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.tags span {
+  background: #eaf5ec;
+  color: #0f5a3b;
+  border-radius: 999px;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.btn-map {
+  height: 54px;
+}
+
+.btn-map:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.location-error {
+  margin: -12px 0 18px;
+  color: #b3261e;
+  font-size: 15px;
+}
+
+.distance {
+  color: #0f5a3b;
+  font-weight: 700;
+}
+
+@media (max-width: 700px) {
+  .search-box {
+    flex-direction: column;
+  }
+
+  .search-box button {
+    height: 50px;
+  }
+}
