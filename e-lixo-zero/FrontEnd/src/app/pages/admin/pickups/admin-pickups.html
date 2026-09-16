@@ -1,0 +1,41 @@
+<div class="page-title">
+  <h1>Gerenciar Agendamentos</h1>
+  <p>Acompanhe e atualize o status das coletas solicitadas.</p>
+</div>
+
+<div class="message success" *ngIf="message">{{ message }}</div>
+<div class="message error" *ngIf="error">{{ error }}</div>
+
+<div class="list">
+
+  <div class="card pickup-card" *ngFor="let pickup of pickups">
+
+    <div class="info">
+      <h3>{{ pickup.waste }} <span class="quantity">x{{ pickup.quantity }}</span></h3>
+      <p><strong>Solicitante:</strong> {{ pickup.userName }}</p>
+      <p>{{ pickup.street }}, {{ pickup.number }} - {{ pickup.neighborhood }}, {{ pickup.city }}</p>
+      <p>{{ pickup.date }} • {{ pickup.period }}</p>
+    </div>
+
+    <div class="side">
+      <span class="status" [ngClass]="statusClass(pickup.status)">
+        {{ statusLabel(pickup.status) }}
+      </span>
+
+      <select
+        class="status-select"
+        [ngModel]="pickup.status"
+        (ngModelChange)="updateStatus(pickup, $event)">
+        <option *ngFor="let status of statuses" [value]="status">
+          {{ statusLabel(status) }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="card empty" *ngIf="pickups.length === 0">
+    Nenhum agendamento encontrado.
+  </div>
+
+</div>
