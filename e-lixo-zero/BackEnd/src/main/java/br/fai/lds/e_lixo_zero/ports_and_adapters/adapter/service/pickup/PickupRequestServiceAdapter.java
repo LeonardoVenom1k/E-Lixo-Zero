@@ -90,11 +90,16 @@ public class PickupRequestServiceAdapter implements PickupRequestService {
         if (id <= 0 || isInvalidString(status)) {
             return false;
         }
-        if (findById(id) == null) {
+        final PickupRequestModel stored = findById(id);
+        if (stored == null || isFinalStatus(stored.getStatus())) {
             return false;
         }
         pickupRequestDao.updateStatus(id, status);
         return true;
+    }
+
+    private boolean isFinalStatus(final String status) {
+        return "Completed".equals(status) || "Cancelled".equals(status) || "Canceled".equals(status);
     }
 
     private boolean isInvalidString(final String value) {
