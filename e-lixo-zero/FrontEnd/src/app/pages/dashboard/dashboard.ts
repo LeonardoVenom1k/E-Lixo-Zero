@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { PickupsService } from '../../services/pickups';
+import { NotificationsService } from '../../services/notifications';
 import { User, UserCompat } from '../../models/user.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { User, UserCompat } from '../../models/user.model';
 })
 export class Dashboard {
   private pickupsService = inject(PickupsService);
+  private notificationsService = inject(NotificationsService);
 
   user: UserCompat | null = (() => {
     const savedUser = localStorage.getItem('loggedInUser');
@@ -50,5 +52,14 @@ export class Dashboard {
       (total, pickup) => total + Number(pickup.quantity),
       0
     )
+  );
+
+  notifications = toSignal(
+    this.notificationsService.list(),
+    { initialValue: [] }
+  );
+
+  hasUnread = computed(
+    () => this.notifications().some(n => !n.read)
   );
 }

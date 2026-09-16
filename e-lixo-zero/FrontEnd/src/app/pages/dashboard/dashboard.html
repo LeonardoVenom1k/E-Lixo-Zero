@@ -5,7 +5,10 @@
   </div>
 
   <div class="user">
-    <span>🔔</span>
+    <a routerLink="/notifications" class="bell" title="Notificações">
+      🔔
+      <span class="badge" *ngIf="hasUnread()"></span>
+    </a>
     <strong>{{ user?.name }}</strong>
   </div>
 </div>
