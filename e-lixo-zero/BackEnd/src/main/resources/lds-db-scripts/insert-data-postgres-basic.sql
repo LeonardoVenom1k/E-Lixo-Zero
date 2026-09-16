@@ -1,9 +1,12 @@
--- senha para ambos: 123456 (hash BCrypt)
+-- senha para todos: 123456 (hash BCrypt)
 INSERT INTO users (full_name, email, password, user_type)
 VALUES ('João Silva', 'joao@gmail.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZyABGxMt1uFJ9qevBTI3sqiHO6', 'CITIZEN');
 
 INSERT INTO users (full_name, email, password, user_type, city)
 VALUES ('Maria Santos', 'maria@gmail.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZyABGxMt1uFJ9qevBTI3sqiHO6', 'CITIZEN', 'Cachoeira de Minas');
+
+INSERT INTO users (full_name, email, password, user_type)
+VALUES ('Administrador', 'admin@elixozero.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZyABGxMt1uFJ9qevBTI3sqiHO6', 'ADMIN');
 
 -- tipos de resíduo (ids 1 a 8, na ordem)
 INSERT INTO waste_types (name, category, description)

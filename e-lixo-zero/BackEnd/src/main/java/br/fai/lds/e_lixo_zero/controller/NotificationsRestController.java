@@ -50,12 +50,34 @@ public class NotificationsRestController {
     }
 
     @PostMapping
-    public ResponseEntity<NotificationModel> create(@RequestBody final NotificationModel notification) {
+    public ResponseEntity<NotificationModel> create(@RequestBody final NotificationModel notification, final HttpServletRequest request) {
+        getAdminUser(request);
         final int id = notificationService.create(notification);
         if (id == 0) {
             throw new ResourceNotFoundException("Error creating notification");
         }
         return ResponseEntity.ok(notificationService.findById(id));
+    }
+
+    @PostMapping("/broadcast")
+    public ResponseEntity<Integer> broadcast(@RequestBody final NotificationModel notification, final HttpServletRequest request) {
+        getAdminUser(request);
+        int sent = 0;
+        for (final UserModel user : userService.findAll()) {
+            if (!user.isActive()) {
+                continue;
+            }
+            final NotificationModel copy = new NotificationModel();
+            copy.setUserId(user.getId());
+            copy.setTitle(notification.getTitle());
+            copy.setMessage(notification.getMessage());
+            copy.setNotificationType(notification.getNotificationType());
+            copy.setRead(false);
+            if (notificationService.create(copy) > 0) {
+                sent++;
+            }
+        }
+        return ResponseEntity.ok(sent);
     }
 
     @PutMapping("/{id}/mark-read")
@@ -78,6 +100,14 @@ public class NotificationsRestController {
         final UserModel user = userService.findByEmail(email);
         if (user == null) {
             throw new UnauthorizedException("User not found");
+        }
+        return user;
+    }
+
+    private UserModel getAdminUser(final HttpServletRequest request) {
+        final UserModel user = getUser(request);
+        if (!"ADMIN".equals(user.getUserType())) {
+            throw new UnauthorizedException("Admin access required");
         }
         return user;
     }

@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.List;
 
@@ -35,16 +36,23 @@ public class UsersRestController {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @GetMapping
-    public ResponseEntity<List<UserModel>> getAll() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<List<UserModel>> getAll(final HttpServletRequest request) {
+        getAdminUser(request);
+        final List<UserModel> users = userService.findAll();
+        for (final UserModel user : users) {
+            user.setPassword(null);
+        }
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserModel> getById(@PathVariable final int id) {
+    public ResponseEntity<UserModel> getById(@PathVariable final int id, final HttpServletRequest request) {
+        getAdminUser(request);
         final UserModel user = userService.findById(id);
         if (user == null) {
             throw new ResourceNotFoundException("User not found");
         }
+        user.setPassword(null);
         return ResponseEntity.ok(user);
     }
 
@@ -63,13 +71,15 @@ public class UsersRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable final int id, @RequestBody final UserModel userModel) {
+    public ResponseEntity<Void> update(@PathVariable final int id, @RequestBody final UserModel userModel, final HttpServletRequest request) {
+        getAdminUser(request);
         final boolean updated = userService.update(id, userModel);
         return updated ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable final int id) {
+    public ResponseEntity<Void> delete(@PathVariable final int id, final HttpServletRequest request) {
+        getAdminUser(request);
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
@@ -84,6 +94,21 @@ public class UsersRestController {
         final String token = jwtTokenService.generateToken(user.getEmail());
         final LoginResponseDto response = toLoginResponse(user, token);
         return ResponseEntity.ok(response);
+    }
+
+    private UserModel getAdminUser(final HttpServletRequest request) {
+        final String email = (String) request.getAttribute("email");
+        if (email == null || email.isBlank()) {
+            throw new UnauthorizedException("User not authenticated");
+        }
+        final UserModel user = userService.findByEmail(email);
+        if (user == null) {
+            throw new UnauthorizedException("User not found");
+        }
+        if (!"ADMIN".equals(user.getUserType())) {
+            throw new UnauthorizedException("Admin access required");
+        }
+        return user;
     }
 
     private void createWelcomeNotification(final int userId, final UserModel user) {

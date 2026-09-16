@@ -50,6 +50,21 @@ public class PickupsRestController {
         return ResponseEntity.ok(toResponseList(pickups));
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<PickupResponseDto>> getAllForAdmin(final HttpServletRequest request) {
+        getAdminUser(request);
+        final List<PickupResponseDto> response = new ArrayList<>();
+        for (final PickupRequestModel pickup : pickupRequestService.findAll()) {
+            final PickupResponseDto dto = toResponse(pickup);
+            if (dto != null) {
+                final UserModel owner = userService.findById(pickup.getUserId());
+                dto.setUserName(owner != null ? owner.getFullName() : "");
+                response.add(dto);
+            }
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<PickupResponseDto> getById(@PathVariable final int id) {
         final PickupRequestModel pickup = pickupRequestService.findById(id);
@@ -124,9 +139,14 @@ public class PickupsRestController {
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<Void> updateStatus(@PathVariable final int id, @RequestBody final PickupRequestDto request) {
+    public ResponseEntity<Void> updateStatus(@PathVariable final int id, @RequestBody final PickupRequestDto request, final HttpServletRequest httpRequest) {
+        getAdminUser(httpRequest);
         final boolean updated = pickupRequestService.updateStatus(id, request.getStatus());
-        return updated ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        if (!updated) {
+            return ResponseEntity.badRequest().build();
+        }
+        createStatusNotification(id, request.getStatus());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
@@ -145,6 +165,51 @@ public class PickupsRestController {
             throw new UnauthorizedException("User not found");
         }
         return user;
+    }
+
+    private UserModel getAdminUser(final HttpServletRequest request) {
+        final UserModel user = getUser(request);
+        if (!"ADMIN".equals(user.getUserType())) {
+            throw new UnauthorizedException("Admin access required");
+        }
+        return user;
+    }
+
+    private void createStatusNotification(final int pickupId, final String status) {
+        final PickupRequestModel pickup = pickupRequestService.findById(pickupId);
+        if (pickup == null) {
+            return;
+        }
+        final WasteTypeModel waste = wasteTypeService.findById(pickup.getWasteTypeId());
+        final String wasteName = waste != null ? waste.getName() : "resíduos";
+        final NotificationModel notification = new NotificationModel();
+        notification.setUserId(pickup.getUserId());
+        notification.setTitle("Status da coleta atualizado");
+        notification.setMessage(String.format("O status da sua coleta de %s foi atualizado para %s.", wasteName, statusLabel(status)));
+        notification.setNotificationType("INFO");
+        notification.setRead(false);
+        notificationService.create(notification);
+    }
+
+    private String statusLabel(final String status) {
+        if (status == null) {
+            return "";
+        }
+        switch (status) {
+            case "PENDING":
+                return "Pendente";
+            case "Scheduled":
+                return "Agendada";
+            case "In Progress":
+                return "Em andamento";
+            case "Completed":
+                return "Concluída";
+            case "Cancelled":
+            case "Canceled":
+                return "Cancelada";
+            default:
+                return status;
+        }
     }
 
     private List<PickupResponseDto> toResponseList(final List<PickupRequestModel> pickups) {

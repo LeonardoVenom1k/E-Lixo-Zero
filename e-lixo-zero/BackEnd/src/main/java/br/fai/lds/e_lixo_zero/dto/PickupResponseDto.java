@@ -3,6 +3,7 @@ package br.fai.lds.e_lixo_zero.dto;
 public class PickupResponseDto {
 
     private int id;
+    private String userName;
     private String waste;
     private int quantity;
     private String street;
@@ -19,6 +20,14 @@ public class PickupResponseDto {
 
     public void setId(final int id) {
         this.id = id;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(final String userName) {
+        this.userName = userName;
     }
 
     public String getWaste() {
