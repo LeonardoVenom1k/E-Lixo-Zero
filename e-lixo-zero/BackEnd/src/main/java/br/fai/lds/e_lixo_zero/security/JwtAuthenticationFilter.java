@@ -1,5 +1,7 @@
 package br.fai.lds.e_lixo_zero.security;
 
+import br.fai.lds.e_lixo_zero.domain.UserModel;
+import br.fai.lds.e_lixo_zero.ports_and_adapters.port.service.user.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,9 +13,11 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenService jwtTokenService;
+    private final UserService userService;
 
-    public JwtAuthenticationFilter(final JwtTokenService jwtTokenService) {
+    public JwtAuthenticationFilter(final JwtTokenService jwtTokenService, final UserService userService) {
         this.jwtTokenService = jwtTokenService;
+        this.userService = userService;
     }
 
     @Override
@@ -47,7 +51,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        request.setAttribute("email", jwtTokenService.getSubjectFromToken(token));
+        final String email = jwtTokenService.getSubjectFromToken(token);
+        final UserModel user = userService.findByEmail(email);
+        if (user == null || !user.isActive()) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
+        request.setAttribute("email", email);
         filterChain.doFilter(request, response);
     }
 

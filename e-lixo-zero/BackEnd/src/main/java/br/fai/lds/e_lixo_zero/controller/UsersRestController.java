@@ -90,6 +90,9 @@ public class UsersRestController {
         if (user == null || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             throw new UnauthorizedException("Invalid email or password");
         }
+        if (!user.isActive()) {
+            throw new UnauthorizedException("User account is deactivated");
+        }
 
         final String token = jwtTokenService.generateToken(user.getEmail());
         final LoginResponseDto response = toLoginResponse(user, token);
