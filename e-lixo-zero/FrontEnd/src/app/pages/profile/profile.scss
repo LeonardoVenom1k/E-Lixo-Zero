@@ -42,3 +42,25 @@
 .row:last-child {
   border-bottom: none;
 }
+
+@media (max-width: 700px) {
+  .profile-card {
+    gap: 16px;
+  }
+
+  .avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .profile-card h2 {
+    font-size: 22px;
+  }
+
+  .row {
+    flex-wrap: wrap;
+    gap: 4px 12px;
+  }
+}

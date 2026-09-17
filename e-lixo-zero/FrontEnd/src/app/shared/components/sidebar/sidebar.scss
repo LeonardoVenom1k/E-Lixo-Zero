@@ -64,3 +64,39 @@ nav a.active {
   background: rgba(255, 255, 255, 0.1);
   transform: translateX(4px);
 }
+
+@media (max-width: 900px) {
+  .sidebar {
+    padding: 16px;
+    min-height: auto;
+  }
+
+  .logo {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  nav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  nav a,
+  .logout {
+    white-space: nowrap;
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  nav a:hover,
+  .logout:hover {
+    transform: none;
+  }
+
+  .footer {
+    display: none;
+  }
+}
