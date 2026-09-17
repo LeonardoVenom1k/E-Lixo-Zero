@@ -104,3 +104,17 @@
   </div>
 
 </div>
+
+<div class="modal-overlay" *ngIf="pendingDelete() as point" (click)="cancelDelete()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Excluir ponto de coleta</h3>
+    <p>
+      Excluir o ponto de coleta <strong>{{ point.name }}</strong>?
+      Essa ação não poderá ser desfeita.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelDelete()">Voltar</button>
+      <button type="button" class="btn-confirm danger" (click)="confirmDelete()">Excluir</button>
+    </div>
+  </div>
+</div>

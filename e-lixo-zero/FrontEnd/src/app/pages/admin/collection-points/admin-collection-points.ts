@@ -21,6 +21,7 @@ export class AdminCollectionPoints implements OnInit {
   showForm = signal(false);
   message = signal('');
   error = signal('');
+  pendingDelete = signal<CollectionPoint | null>(null);
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -129,9 +130,15 @@ export class AdminCollectionPoints implements OnInit {
   }
 
   remove(point: CollectionPoint): void {
-    if (!confirm(`Excluir o ponto de coleta "${point.name}"?`)) {
+    this.pendingDelete.set(point);
+  }
+
+  confirmDelete(): void {
+    const point = this.pendingDelete();
+    if (!point) {
       return;
     }
+    this.pendingDelete.set(null);
     this.clearMessages();
     this.collectionPointsService.delete(point.id).subscribe({
       next: () => {
@@ -140,6 +147,10 @@ export class AdminCollectionPoints implements OnInit {
       },
       error: () => this.error.set('Erro ao excluir ponto de coleta.'),
     });
+  }
+
+  cancelDelete(): void {
+    this.pendingDelete.set(null);
   }
 
   isFieldInvalid(name: string): boolean {
