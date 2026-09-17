@@ -11,7 +11,7 @@ import { Pickup } from '../models/pickup.model';
 export class PickupsService {
   private http = inject(HttpClient);
 
-  private api = 'http://localhost:8087/api/pickups';
+  private api = '/api/pickups';
 
   list(): Observable<Pickup[]> {
     return this.http.get<Pickup[]>(this.api);

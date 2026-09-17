@@ -9,7 +9,7 @@ import { User } from '../models/user.model';
 })
 export class UsersService {
   private http = inject(HttpClient);
-  private api = 'http://localhost:8087/api/users';
+  private api = '/api/users';
 
   list(): Observable<User[]> {
     return this.http.get<User[]>(this.api);

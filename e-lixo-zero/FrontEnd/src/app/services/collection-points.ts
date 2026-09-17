@@ -10,7 +10,7 @@ import { CollectionPoint } from '../models/collection-point.model';
 export class CollectionPointsService {
   private http = inject(HttpClient);
 
-  private api = 'http://localhost:8087/api/collection-points';
+  private api = '/api/collection-points';
 
   list(): Observable<CollectionPoint[]> {
     return this.http.get<CollectionPoint[]>(this.api);

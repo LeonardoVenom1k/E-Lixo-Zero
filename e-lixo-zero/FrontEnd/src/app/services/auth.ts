@@ -11,7 +11,7 @@ import { User, UserCompat } from '../models/user.model';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private api = 'http://localhost:8087/api/users';
+  private api = '/api/users';
   private userKey = 'loggedInUser';
   private tokenKey = 'token';
 

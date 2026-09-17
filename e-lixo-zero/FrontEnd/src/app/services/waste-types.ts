@@ -11,7 +11,7 @@ import { WasteType } from '../models/waste-type.model';
 export class WasteTypesService {
   private http = inject(HttpClient);
 
-  private api = 'http://localhost:8087/api/waste-types';
+  private api = '/api/waste-types';
 
   list(): Observable<WasteType[]> {
     return this.http.get<WasteType[]>(this.api);
