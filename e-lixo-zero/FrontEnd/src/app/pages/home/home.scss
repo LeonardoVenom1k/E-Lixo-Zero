@@ -18,6 +18,8 @@
   gap: 32px;
 
   margin-bottom: 30px;
+
+  animation: slideDown 0.4s ease backwards;
 }
 
 .logo {
@@ -33,6 +35,7 @@ nav {
 }
 
 nav a {
+  position: relative;
   color: #111827;
   font-weight: 500;
   text-decoration: none;
@@ -40,10 +43,28 @@ nav a {
   transition: 0.2s;
 }
 
+nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  background: #178c3b;
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
 nav a:hover,
 nav a.active {
   color: #178c3b;
-  border-bottom: 3px solid #178c3b;
+}
+
+nav a:hover::after,
+nav a.active::after {
+  transform: scaleX(1);
 }
 
 .nav-actions {
@@ -99,6 +120,10 @@ nav a.active {
   padding: 70px 0 50px;
 }
 
+.hero-text > * {
+  animation: fadeInUp 0.5s ease backwards;
+}
+
 .hero-text h1 {
   margin: 0;
 
@@ -106,6 +131,8 @@ nav a.active {
   font-size: clamp(48px, 5vw, 82px);
   line-height: 1.05;
   font-weight: 800;
+
+  animation-delay: 0.1s;
 }
 
 .hero-text h1 span {
@@ -120,11 +147,15 @@ nav a.active {
   font-size: 22px;
   line-height: 1.5;
   color: #4b5563;
+
+  animation-delay: 0.2s;
 }
 
 .hero-actions {
   display: flex;
   gap: 18px;
+
+  animation-delay: 0.3s;
 }
 
 .hero-image {
@@ -137,6 +168,10 @@ nav a.active {
   width: 100%;
   max-width: 720px;
   object-fit: contain;
+
+  animation:
+    fadeIn 0.6s ease 0.2s backwards,
+    float 5s ease-in-out 1s infinite;
 }
 
 .features {
@@ -154,6 +189,14 @@ nav a.active {
   display: flex;
   align-items: center;
   gap: 16px;
+
+  animation: fadeInUp 0.5s ease backwards;
+}
+
+@for $i from 1 through 4 {
+  .features .feature:nth-child(#{$i}) {
+    animation-delay: #{0.3 + $i * 0.08}s;
+  }
 }
 
 .feature span {
@@ -167,6 +210,15 @@ nav a.active {
   place-items: center;
 
   font-size: 28px;
+
+  transition:
+    transform 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.feature:hover span {
+  transform: scale(1.15);
+  background: #dcf0e2;
 }
 
 .feature strong {

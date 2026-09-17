@@ -11,6 +11,7 @@
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 36px;
+  animation: fadeIn 0.4s ease backwards;
 }
 
 nav {
@@ -24,6 +25,18 @@ nav a {
   padding: 14px 18px;
   border-radius: 12px;
   transition: 0.2s;
+  animation: fadeInUp 0.35s ease backwards;
+}
+
+@for $i from 1 through 8 {
+  nav a:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.05}s;
+  }
+}
+
+nav a:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateX(4px);
 }
 
 nav a.active {
@@ -44,8 +57,10 @@ nav a.active {
   border-radius: 12px;
   cursor: pointer;
   font: inherit;
+  transition: 0.2s;
 }
 
 .logout:hover {
   background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
 }

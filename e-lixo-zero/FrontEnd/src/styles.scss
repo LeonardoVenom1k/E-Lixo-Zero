@@ -131,3 +131,170 @@ a {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============ Animações ============ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 7px rgba(220, 38, 38, 0);
+  }
+}
+
+/* Transição suave entre páginas: o componente carregado pelo router entra com fade-up */
+router-outlet + * {
+  display: block;
+  animation: fadeInUp 0.35s ease backwards;
+}
+
+/* Cards: entrada animada com stagger + elevação no hover */
+.card {
+  animation: fadeInUp 0.4s ease backwards;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+@for $i from 1 through 10 {
+  :is(.list, .grid-2, .grid-3, .waste-grid) > .card:nth-child(#{$i}) {
+    animation-delay: #{$i * 0.06}s;
+  }
+}
+
+/* Ícones dentro de cards dão um zoom leve no hover */
+.card .icon {
+  transition: transform 0.25s ease;
+}
+
+.card:hover .icon {
+  transform: scale(1.15);
+}
+
+/* Modais: overlay esmaece e a caixa "pipoca" para dentro */
+.modal-overlay {
+  animation: fadeIn 0.2s ease backwards;
+}
+
+.modal {
+  animation: scaleIn 0.25s ease backwards;
+}
+
+/* Mensagens de sucesso/erro descem suavemente */
+.message {
+  animation: slideDown 0.3s ease backwards;
+}
+
+/* Botões: transição suave e efeito de "aperto" ao clicar */
+button,
+.btn {
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+button:active,
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Inputs: anel verde suave no foco */
+input,
+select,
+textarea {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(23, 140, 59, 0.15);
+  outline: none;
+}
+
+/* Pills de status transitam suavemente ao mudar de cor */
+.status,
+.badge {
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Respeita usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

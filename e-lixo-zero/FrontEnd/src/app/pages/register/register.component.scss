@@ -8,6 +8,7 @@
   display: grid;
   grid-template-columns: 1fr 1.1fr;
   gap: 44px;
+  animation: scaleIn 0.45s ease backwards;
 }
 
 .auth-visual {
