@@ -8,6 +8,9 @@ VALUES ('Maria Santos', 'maria@gmail.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZy
 INSERT INTO users (full_name, email, password, user_type)
 VALUES ('Administrador', 'admin@elixozero.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZyABGxMt1uFJ9qevBTI3sqiHO6', 'ADMIN');
 
+INSERT INTO users (full_name, email, password, user_type)
+VALUES ('Carlos Coletor', 'coletor@elixozero.com', '$2a$10$7S1Zp5vdEH6YRylYp3sdcezcMwUZyABGxMt1uFJ9qevBTI3sqiHO6', 'COLLECTOR');
+
 -- tipos de resíduo (ids 1 a 8, na ordem)
 INSERT INTO waste_types (name, category, description)
 VALUES ('Celulares', 'Eletrônicos', 'Telefones celulares e smartphones');

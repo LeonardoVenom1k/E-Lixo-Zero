@@ -30,7 +30,12 @@ export class LoginComponent {
 
       if (valid) {
         this.error.set('');
-        this.router.navigate([this.auth.isAdmin() ? '/admin' : '/dashboard']);
+        const destination = this.auth.isAdmin()
+          ? '/admin'
+          : this.auth.isCollector()
+            ? '/collector/pickups'
+            : '/dashboard';
+        this.router.navigate([destination]);
       } else {
         this.error.set('E-mail ou senha inválidos.');
       }

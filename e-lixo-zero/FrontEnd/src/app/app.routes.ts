@@ -21,6 +21,8 @@ import { AdminCollectionPoints } from './pages/admin/collection-points/admin-col
 import { AdminWasteTypes } from './pages/admin/waste-types/admin-waste-types';
 import { AdminPickups } from './pages/admin/pickups/admin-pickups';
 import { AdminNotifications } from './pages/admin/notifications/admin-notifications';
+import { collectorGuard } from './core/guards/collector-guard';
+import { CollectorPickups } from './pages/collector/pickups/collector-pickups';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -48,6 +50,9 @@ export const routes: Routes = [
     { path: 'admin/waste-types', component: AdminWasteTypes, canActivate: [adminGuard] },
     { path: 'admin/pickups', component: AdminPickups, canActivate: [adminGuard] },
     { path: 'admin/notifications', component: AdminNotifications, canActivate: [adminGuard] },
+
+    { path: 'collector', redirectTo: 'collector/pickups', pathMatch: 'full' },
+    { path: 'collector/pickups', component: CollectorPickups, canActivate: [collectorGuard] },
   ],
 },
 

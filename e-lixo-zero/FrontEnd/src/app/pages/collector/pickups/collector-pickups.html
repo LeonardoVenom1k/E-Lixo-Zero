@@ -1,0 +1,88 @@
+<div class="page-title">
+  <h1>Coletas</h1>
+  <p>Visualize as coletas disponíveis e atualize o status das suas coletas.</p>
+</div>
+
+<div class="message success" *ngIf="message()">{{ message() }}</div>
+<div class="message error" *ngIf="error()">{{ error() }}</div>
+
+<section class="search-box">
+  <input
+    type="text"
+    [ngModel]="search()"
+    (ngModelChange)="search.set($event)"
+    placeholder="Buscar por solicitante, resíduo, endereço ou status..." />
+  <select
+    class="status-filter"
+    [ngModel]="statusFilter()"
+    (ngModelChange)="statusFilter.set($event)">
+    <option value="">Todos os status</option>
+    <option *ngFor="let status of statuses" [value]="status">
+      {{ statusLabel(status) }}
+    </option>
+  </select>
+  <button type="button" class="btn-toggle" (click)="toggleHidden()">
+    {{ showHidden() ? 'Ocultar finalizadas' : 'Mostrar ocultos (' + hiddenCount() + ')' }}
+  </button>
+</section>
+
+<div class="list">
+
+  <div class="card pickup-card" *ngFor="let pickup of filteredPickups()">
+
+    <div class="info">
+      <h3>
+        {{ pickup.waste }} <span class="quantity">x{{ pickup.quantity }}</span>
+        <span class="badge" [ngClass]="isMine(pickup) ? 'mine' : 'available'">
+          {{ isMine(pickup) ? 'Minha coleta' : 'Disponível' }}
+        </span>
+      </h3>
+      <p><strong>Solicitante:</strong> {{ pickup.userName }}</p>
+      <p>{{ pickup.street }}, {{ pickup.number }} - {{ pickup.neighborhood }}, {{ pickup.city }}</p>
+      <p>{{ pickup.date }} • {{ pickup.period }}</p>
+    </div>
+
+    <div class="side">
+      <span class="status" [ngClass]="statusClass(pickup.status)">
+        {{ statusLabel(pickup.status) }}
+      </span>
+
+      <select
+        class="status-select"
+        [ngModel]="pickup.status"
+        [disabled]="isFinalStatus(pickup.status)"
+        (change)="onStatusChange(pickup, $event)">
+        <option *ngFor="let status of statuses" [value]="status">
+          {{ statusLabel(status) }}
+        </option>
+      </select>
+    </div>
+
+  </div>
+
+  <div class="card empty" *ngIf="filteredPickups().length === 0">
+    Nenhuma coleta encontrada.
+  </div>
+
+</div>
+
+<div class="modal-overlay" *ngIf="pendingConfirmation() as confirmation" (click)="cancelStatusChange()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <h3>Confirmar {{ statusLabel(confirmation.status) }}</h3>
+    <p>
+      Marcar a coleta de <strong>{{ confirmation.pickup.waste }}</strong>
+      solicitada por <strong>{{ confirmation.pickup.userName }}</strong> como
+      "{{ statusLabel(confirmation.status) }}"? Essa ação não poderá ser desfeita.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" (click)="cancelStatusChange()">Voltar</button>
+      <button
+        type="button"
+        class="btn-confirm"
+        [class.danger]="confirmation.status === 'Cancelled' || confirmation.status === 'Canceled'"
+        (click)="confirmStatusChange()">
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>

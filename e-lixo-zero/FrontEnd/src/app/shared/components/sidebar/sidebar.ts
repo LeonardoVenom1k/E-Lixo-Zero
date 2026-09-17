@@ -16,6 +16,7 @@ export class Sidebar {
   private router = inject(Router);
 
   isAdmin = this.auth.isAdmin();
+  isCollector = this.auth.isCollector();
 
   logout(): void {
     this.auth.logout();

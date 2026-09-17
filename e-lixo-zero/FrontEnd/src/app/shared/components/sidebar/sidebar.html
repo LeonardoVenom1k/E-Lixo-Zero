@@ -1,7 +1,7 @@
 <aside class="sidebar">
   <div class="logo">♻ E-LIXO ZERO</div>
 
-  <nav *ngIf="!isAdmin">
+  <nav *ngIf="!isAdmin && !isCollector">
     <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
     <a routerLink="/collection-points" routerLinkActive="active">Pontos de Coleta</a>
     <a routerLink="/request-pickup" routerLinkActive="active">Solicitar Coleta</a>
@@ -18,6 +18,13 @@
     <a routerLink="/admin/collection-points" routerLinkActive="active">Pontos de Coleta</a>
     <a routerLink="/admin/waste-types" routerLinkActive="active">Resíduos</a>
     <a routerLink="/admin/notifications" routerLinkActive="active">Enviar Notificação</a>
+    <button class="logout" type="button" (click)="logout()">Sair</button>
+  </nav>
+
+  <nav *ngIf="isCollector">
+    <a routerLink="/collector/pickups" routerLinkActive="active">Coletas</a>
+    <a routerLink="/notifications" routerLinkActive="active">Notificações</a>
+    <a routerLink="/profile" routerLinkActive="active">Perfil</a>
     <button class="logout" type="button" (click)="logout()">Sair</button>
   </nav>
 

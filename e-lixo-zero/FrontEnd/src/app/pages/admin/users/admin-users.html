@@ -28,9 +28,15 @@
     <div class="side">
 
       <div class="badges">
-        <span class="badge type" [ngClass]="{ admin: user.userType === 'ADMIN' }">
-          {{ typeLabel(user.userType) }}
-        </span>
+        <span class="badge type admin" *ngIf="user.userType === 'ADMIN'">Administrador</span>
+        <select
+          class="badge type-select"
+          *ngIf="user.userType !== 'ADMIN'"
+          [ngModel]="user.userType"
+          (change)="onTypeChange(user, $event)">
+          <option value="CITIZEN">Cidadão</option>
+          <option value="COLLECTOR">Coletor</option>
+        </select>
         <span class="badge" [ngClass]="user.active ? 'active' : 'inactive'">
           {{ user.active ? 'Ativo' : 'Inativo' }}
         </span>
@@ -57,7 +63,9 @@
 
 <div class="modal-overlay" *ngIf="pendingAction() as pending" (click)="cancelAction()">
   <div class="modal" (click)="$event.stopPropagation()">
-    <h3>{{ pending.action === 'delete' ? 'Excluir usuário' : 'Desativar usuário' }}</h3>
+    <h3>
+      {{ pending.action === 'delete' ? 'Excluir usuário' : pending.action === 'type' ? 'Alterar perfil' : 'Desativar usuário' }}
+    </h3>
     <p *ngIf="pending.action === 'delete'">
       Excluir o usuário <strong>{{ pending.user.fullName }}</strong>?
       Essa ação não poderá ser desfeita.
@@ -66,10 +74,18 @@
       Desativar o usuário <strong>{{ pending.user.fullName }}</strong>?
       Ele não poderá mais acessar a plataforma.
     </p>
+    <p *ngIf="pending.action === 'type'">
+      Alterar o perfil de <strong>{{ pending.user.fullName }}</strong> para
+      <strong>{{ typeLabel(pending.newType) }}</strong>?
+    </p>
     <div class="modal-actions">
       <button type="button" class="btn-secondary" (click)="cancelAction()">Voltar</button>
-      <button type="button" class="btn-confirm danger" (click)="confirmAction()">
-        {{ pending.action === 'delete' ? 'Excluir' : 'Desativar' }}
+      <button
+        type="button"
+        class="btn-confirm"
+        [class.danger]="pending.action !== 'type'"
+        (click)="confirmAction()">
+        {{ pending.action === 'delete' ? 'Excluir' : pending.action === 'type' ? 'Alterar' : 'Desativar' }}
       </button>
     </div>
   </div>

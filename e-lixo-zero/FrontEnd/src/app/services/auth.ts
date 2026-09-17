@@ -68,6 +68,10 @@ export class AuthService {
     return this.getUser()?.userType === 'ADMIN';
   }
 
+  isCollector(): boolean {
+    return this.getUser()?.userType === 'COLLECTOR';
+  }
+
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }

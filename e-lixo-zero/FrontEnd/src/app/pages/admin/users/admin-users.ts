@@ -19,7 +19,7 @@ export class AdminUsers implements OnInit {
   search = signal('');
   message = signal('');
   error = signal('');
-  pendingAction = signal<{ user: User; action: 'deactivate' | 'delete' } | null>(null);
+  pendingAction = signal<{ user: User; action: 'deactivate' | 'delete' | 'type'; newType?: string; select?: HTMLSelectElement } | null>(null);
 
   filteredUsers = computed(() => {
     const term = this.search().trim().toLowerCase();
@@ -44,6 +44,15 @@ export class AdminUsers implements OnInit {
     });
   }
 
+  onTypeChange(user: User, event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    const newType = select.value;
+    if (newType === user.userType) {
+      return;
+    }
+    this.pendingAction.set({ user, action: 'type', newType, select });
+  }
+
   toggleActive(user: User): void {
     if (user.active) {
       this.pendingAction.set({ user, action: 'deactivate' });
@@ -64,12 +73,18 @@ export class AdminUsers implements OnInit {
     this.pendingAction.set(null);
     if (pending.action === 'delete') {
       this.doRemove(pending.user);
+    } else if (pending.action === 'type') {
+      this.doChangeType(pending.user, pending.newType!);
     } else {
       this.doToggleActive(pending.user);
     }
   }
 
   cancelAction(): void {
+    const pending = this.pendingAction();
+    if (pending?.action === 'type' && pending.select) {
+      pending.select.value = pending.user.userType ?? 'CITIZEN';
+    }
     this.pendingAction.set(null);
   }
 
@@ -95,8 +110,25 @@ export class AdminUsers implements OnInit {
     });
   }
 
+  private doChangeType(user: User, newType: string): void {
+    this.clearMessages();
+    this.usersService.update(Number(user.id), { ...user, userType: newType }).subscribe({
+      next: () => {
+        this.message.set(`Perfil de ${user.fullName} alterado para ${this.typeLabel(newType)}.`);
+        this.load();
+      },
+      error: () => this.error.set('Erro ao alterar perfil do usuário.'),
+    });
+  }
+
   typeLabel(userType?: string): string {
-    return userType === 'ADMIN' ? 'Administrador' : 'Cidadão';
+    if (userType === 'ADMIN') {
+      return 'Administrador';
+    }
+    if (userType === 'COLLECTOR') {
+      return 'Coletor';
+    }
+    return 'Cidadão';
   }
 
   private clearMessages(): void {

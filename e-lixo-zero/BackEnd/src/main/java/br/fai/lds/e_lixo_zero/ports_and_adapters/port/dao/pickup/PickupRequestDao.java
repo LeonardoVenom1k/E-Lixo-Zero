@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface PickupRequestDao extends CrudDao<PickupRequestModel> {
     List<PickupRequestModel> readByUserId(final int userId);
+    List<PickupRequestModel> readForCollector(final int collectorId);
     void updateStatus(final int id, final String status);
+    void assignCollector(final int id, final int collectorId);
 }

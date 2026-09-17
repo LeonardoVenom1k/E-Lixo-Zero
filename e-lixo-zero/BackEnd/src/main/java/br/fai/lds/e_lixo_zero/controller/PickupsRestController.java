@@ -53,16 +53,13 @@ public class PickupsRestController {
     @GetMapping("/all")
     public ResponseEntity<List<PickupResponseDto>> getAllForAdmin(final HttpServletRequest request) {
         getAdminUser(request);
-        final List<PickupResponseDto> response = new ArrayList<>();
-        for (final PickupRequestModel pickup : pickupRequestService.findAll()) {
-            final PickupResponseDto dto = toResponse(pickup);
-            if (dto != null) {
-                final UserModel owner = userService.findById(pickup.getUserId());
-                dto.setUserName(owner != null ? owner.getFullName() : "");
-                response.add(dto);
-            }
-        }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(toResponseListWithOwner(pickupRequestService.findAll()));
+    }
+
+    @GetMapping("/collector")
+    public ResponseEntity<List<PickupResponseDto>> getForCollector(final HttpServletRequest request) {
+        final UserModel collector = getCollectorUser(request);
+        return ResponseEntity.ok(toResponseListWithOwner(pickupRequestService.findForCollector(collector.getId())));
     }
 
     @GetMapping("/{id}")
@@ -140,8 +137,15 @@ public class PickupsRestController {
 
     @PutMapping("/{id}/status")
     public ResponseEntity<Void> updateStatus(@PathVariable final int id, @RequestBody final PickupRequestDto request, final HttpServletRequest httpRequest) {
-        getAdminUser(httpRequest);
-        final boolean updated = pickupRequestService.updateStatus(id, request.getStatus());
+        final UserModel user = getUser(httpRequest);
+        final boolean updated;
+        if ("ADMIN".equals(user.getUserType())) {
+            updated = pickupRequestService.updateStatus(id, request.getStatus());
+        } else if ("COLLECTOR".equals(user.getUserType())) {
+            updated = pickupRequestService.updateStatusByCollector(id, request.getStatus(), user.getId());
+        } else {
+            throw new UnauthorizedException("Admin or collector access required");
+        }
         if (!updated) {
             return ResponseEntity.badRequest().build();
         }
@@ -173,6 +177,27 @@ public class PickupsRestController {
             throw new UnauthorizedException("Admin access required");
         }
         return user;
+    }
+
+    private UserModel getCollectorUser(final HttpServletRequest request) {
+        final UserModel user = getUser(request);
+        if (!"COLLECTOR".equals(user.getUserType())) {
+            throw new UnauthorizedException("Collector access required");
+        }
+        return user;
+    }
+
+    private List<PickupResponseDto> toResponseListWithOwner(final List<PickupRequestModel> pickups) {
+        final List<PickupResponseDto> response = new ArrayList<>();
+        for (final PickupRequestModel pickup : pickups) {
+            final PickupResponseDto dto = toResponse(pickup);
+            if (dto != null) {
+                final UserModel owner = userService.findById(pickup.getUserId());
+                dto.setUserName(owner != null ? owner.getFullName() : "");
+                response.add(dto);
+            }
+        }
+        return response;
     }
 
     private void createStatusNotification(final int pickupId, final String status) {
@@ -230,6 +255,7 @@ public class PickupsRestController {
         final WasteTypeModel waste = wasteTypeService.findById(pickup.getWasteTypeId());
         final PickupResponseDto dto = new PickupResponseDto();
         dto.setId(pickup.getId());
+        dto.setCollectorId(pickup.getCollectorId());
         dto.setWaste(waste != null ? waste.getName() : "");
         dto.setQuantity(parseQuantity(pickup.getEstimatedQuantity()));
         dto.setStreet(pickup.getStreet());

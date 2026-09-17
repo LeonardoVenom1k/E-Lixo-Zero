@@ -134,6 +134,25 @@ public class PickupRequestPostgresDaoAdapter implements PickupRequestDao {
     }
 
     @Override
+    public List<PickupRequestModel> readForCollector(final int collectorId) {
+        final String sql = "SELECT * FROM pickup_requests WHERE collector_id IS NULL OR collector_id = ?";
+        try {
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, collectorId);
+            final ResultSet resultSet = preparedStatement.executeQuery();
+            final List<PickupRequestModel> pickups = new ArrayList<>();
+            while (resultSet.next()) {
+                pickups.add(mapPickup(resultSet));
+            }
+            resultSet.close();
+            preparedStatement.close();
+            return pickups;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void updateInformation(final int id, final PickupRequestModel entity) {
         final String sql = "UPDATE pickup_requests SET user_id = ?, waste_type_id = ?, street = ?, number = ?, neighborhood = ?, city = ?, state = ?, estimated_quantity = ?, desired_date = ?, status = ?, notes = ?, updated_at = current_timestamp WHERE pickup_id = ?";
         try {
@@ -171,6 +190,27 @@ public class PickupRequestPostgresDaoAdapter implements PickupRequestDao {
             connection.setAutoCommit(false);
             final PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+            preparedStatement.close();
+            connection.commit();
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void assignCollector(final int id, final int collectorId) {
+        final String sql = "UPDATE pickup_requests SET collector_id = ?, updated_at = current_timestamp WHERE pickup_id = ?";
+        try {
+            connection.setAutoCommit(false);
+            final PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, collectorId);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
             preparedStatement.close();

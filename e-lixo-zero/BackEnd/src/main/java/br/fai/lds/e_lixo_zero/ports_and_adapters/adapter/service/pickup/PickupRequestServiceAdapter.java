@@ -86,6 +86,14 @@ public class PickupRequestServiceAdapter implements PickupRequestService {
     }
 
     @Override
+    public List<PickupRequestModel> findForCollector(final int collectorId) {
+        if (collectorId <= 0) {
+            return List.of();
+        }
+        return pickupRequestDao.readForCollector(collectorId);
+    }
+
+    @Override
     public boolean updateStatus(final int id, final String status) {
         if (id <= 0 || isInvalidString(status)) {
             return false;
@@ -95,6 +103,25 @@ public class PickupRequestServiceAdapter implements PickupRequestService {
             return false;
         }
         pickupRequestDao.updateStatus(id, status);
+        return true;
+    }
+
+    @Override
+    public boolean updateStatusByCollector(final int id, final String status, final int collectorId) {
+        if (id <= 0 || isInvalidString(status) || collectorId <= 0) {
+            return false;
+        }
+        final PickupRequestModel stored = findById(id);
+        if (stored == null || isFinalStatus(stored.getStatus())) {
+            return false;
+        }
+        if (stored.getCollectorId() != 0 && stored.getCollectorId() != collectorId) {
+            return false;
+        }
+        pickupRequestDao.updateStatus(id, status);
+        if (stored.getCollectorId() == 0) {
+            pickupRequestDao.assignCollector(id, collectorId);
+        }
         return true;
     }
 

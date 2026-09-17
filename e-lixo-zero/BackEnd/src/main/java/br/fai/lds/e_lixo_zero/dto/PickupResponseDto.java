@@ -4,6 +4,7 @@ public class PickupResponseDto {
 
     private int id;
     private String userName;
+    private int collectorId;
     private String waste;
     private int quantity;
     private String street;
@@ -28,6 +29,14 @@ public class PickupResponseDto {
 
     public void setUserName(final String userName) {
         this.userName = userName;
+    }
+
+    public int getCollectorId() {
+        return collectorId;
+    }
+
+    public void setCollectorId(final int collectorId) {
+        this.collectorId = collectorId;
     }
 
     public String getWaste() {

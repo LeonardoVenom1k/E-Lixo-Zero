@@ -21,6 +21,10 @@ export class PickupsService {
     return this.http.get<Pickup[]>(`${this.api}/all`);
   }
 
+  listForCollector(): Observable<Pickup[]> {
+    return this.http.get<Pickup[]>(`${this.api}/collector`);
+  }
+
   create(pickup: Omit<Pickup, 'id'>): Observable<Pickup> {
     return this.http.post<Pickup>(this.api, pickup);
   }
