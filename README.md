@@ -30,20 +30,29 @@ A plataforma permite localizar pontos de coleta (inclusive ordenados pela distâ
 
 ### Áreas restritas
 
-- Dashboard personalizado, com indicador visual (bolinha vermelha) no sino quando há notificações não lidas
+- Dashboard personalizado, com indicador visual (bolinha vermelha pulsante) no sino quando há notificações não lidas
 - Solicitação de coleta
 - Visualização das coletas realizadas, com status coloridos (pendente, agendada, em andamento, concluída, cancelada)
 - Consulta de resíduos
 - Central de notificações (inclui notificação de boas-vindas automática no cadastro; ao abrir a central, as notificações são marcadas como lidas)
 - Perfil do usuário
 
+### Área do coletor (perfil COLLECTOR)
+
+- Visualização das coletas disponíveis e das atribuídas ao coletor, com busca e filtro por status
+- Atualização de status da coleta — ao atualizar, a coleta é automaticamente atribuída ao coletor (coletas de outro coletor não podem ser alteradas)
+- Status "Concluída" e "Cancelada" exigem confirmação em modal e não podem mais ser alterados
+- Central de notificações e perfil
+
 ### Área administrativa (perfil ADMIN)
 
-- Gerenciamento de usuários (listar, ativar/desativar, excluir, com modal de confirmação; usuário desativado ou excluído perde o acesso imediatamente, inclusive sessões abertas)
-- Gerenciamento de pontos de coleta (cadastrar, editar, excluir)
+- Gerenciamento de usuários (listar, ativar/desativar, alterar perfil entre Cidadão e Coletor, excluir, com modal de confirmação; usuário desativado ou excluído perde o acesso imediatamente, inclusive sessões abertas)
+- Gerenciamento de pontos de coleta (cadastrar, editar, excluir com modal de confirmação)
 - Gerenciamento de tipos de resíduos (cadastrar, editar, excluir)
 - Gerenciamento de agendamentos (visualizar todas as coletas, buscar por solicitante/resíduo/endereço/status e atualizar status, com notificação automática ao usuário; status "Concluída" e "Cancelada" exigem confirmação e não podem mais ser alterados)
 - Envio de notificações para um usuário específico ou para todos (broadcast), com modal de confirmação antes do envio
+
+A interface é responsiva (adaptada para celular) e conta com animações e transições sutis: entrada animada de páginas e cards, modais com scale-in, hover effects e foco destacado em campos de formulário.
 
 ## Tecnologias Utilizadas
 
@@ -112,6 +121,7 @@ Usuários de exemplo (senha `123456` para todos):
 - `joao@gmail.com` — Santa Rita do Sapucaí
 - `maria@gmail.com` — Cachoeira de Minas
 - `admin@elixozero.com` — administrador (acessa a área administrativa após o login)
+- `coletor@elixozero.com` — coletor (acessa a área do coletor após o login)
 
 ### 2. Iniciar o back-end
 
@@ -130,7 +140,7 @@ npm install
 ng serve
 ```
 
-A aplicação estará disponível em `http://localhost:4200`.
+A aplicação estará disponível em `http://localhost:4200`. O dev server encaminha as chamadas `/api` ao back-end em `localhost:8087` via `proxy.conf.json`, então o back-end precisa estar rodando.
 
 ## Endpoints Principais
 
@@ -145,10 +155,15 @@ A aplicação estará disponível em `http://localhost:4200`.
 - `GET /api/notifications` — lista notificações do usuário
 - `PUT /api/notifications/{id}/mark-read` — marca notificação como lida
 
+Endpoints do coletor (perfil COLLECTOR):
+
+- `GET /api/pickups/collector` — lista coletas disponíveis e atribuídas ao coletor autenticado
+- `PUT /api/pickups/{id}/status` — atualiza status, atribui a coleta ao coletor e notifica o usuário
+
 Endpoints exclusivos do administrador:
 
 - `GET /api/users` — lista todos os usuários
-- `PUT /api/users/{id}` — atualiza usuário (ex.: ativar/desativar)
+- `PUT /api/users/{id}` — atualiza usuário (ex.: ativar/desativar, alterar perfil)
 - `DELETE /api/users/{id}` — exclui usuário
 - `GET /api/pickups/all` — lista todas as coletas com o nome do solicitante
 - `PUT /api/pickups/{id}/status` — atualiza status e notifica o usuário
