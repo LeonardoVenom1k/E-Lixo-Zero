@@ -134,7 +134,7 @@ A API estará disponível em `http://localhost:8087`.
 
 ### Testes unitários do back-end
 
-Os testes do back-end usam JUnit 5 e são executados pelo Maven Surefire. Não é necessário iniciar o PostgreSQL para executar os testes unitários.
+Os testes do back-end usam JUnit 4.13.2, conforme os slides da disciplina, e são executados pelo Maven Surefire. O Vintage Engine integra o JUnit 4 ao executor do Spring Boot 3. Os testes unitários puros não carregam o contexto Spring.
 
 ```bash
 cd e-lixo-zero/BackEnd
