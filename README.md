@@ -132,6 +132,17 @@ cd e-lixo-zero/BackEnd
 
 A API estará disponível em `http://localhost:8087`.
 
+### Testes unitários do back-end
+
+Os testes do back-end usam JUnit 5 e são executados pelo Maven Surefire. Não é necessário iniciar o PostgreSQL para executar os testes unitários.
+
+```bash
+cd e-lixo-zero/BackEnd
+./mvnw test
+```
+
+No Windows, use `mvnw.cmd test`. Os testes ficam em `src/test/java`, organizados nos mesmos pacotes das classes testadas. Para executar uma classe específica, use `./mvnw -Dtest=JwtTokenServiceTest test`.
+
 ### 3. Iniciar o front-end
 
 ```bash
