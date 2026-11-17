@@ -143,6 +143,21 @@ cd e-lixo-zero/BackEnd
 
 No Windows, use `mvnw.cmd test`. Os testes ficam em `src/test/java`, organizados nos mesmos pacotes das classes testadas. Para executar uma classe específica, use `./mvnw -Dtest=JwtTokenServiceTest test`.
 
+### Testes E2E de login e cadastro
+
+O front-end usa Playwright com Chromium para automatizar os fluxos de login e cadastro de cidadão. A API de usuários é simulada nos testes para manter os cenários repetíveis e não gravar dados no banco local. O servidor Angular é iniciado automaticamente pelo Playwright; não é necessário iniciar o back-end para esses cenários.
+
+```bash
+cd e-lixo-zero/FrontEnd
+npm ci
+npx playwright install chromium
+npm run e2e
+```
+
+No Windows, os mesmos comandos funcionam no PowerShell. `npm run e2e:report` abre o relatório HTML após uma execução.
+
+O plano dos cenários, resultados e análise de cobertura está em `docs/ApêndiceE-Plano_de_Testes/Plano de testes E2E.md`.
+
 ### 3. Iniciar o front-end
 
 ```bash

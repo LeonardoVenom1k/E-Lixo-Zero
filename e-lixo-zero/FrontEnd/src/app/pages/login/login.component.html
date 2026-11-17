@@ -23,6 +23,8 @@
   <div class="auth-form">
     <h1>Entrar</h1>
 
+    <p class="success" role="status" *ngIf="success()">{{ success() }}</p>
+
     <label for="email">E-mail</label>
 
     <input

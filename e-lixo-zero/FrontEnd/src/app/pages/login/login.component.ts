@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../services/auth';
 
@@ -15,10 +15,16 @@ import { AuthService } from '../../services/auth';
 export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   email = '';
   password = '';
   error = signal('');
+  success = signal(
+    this.route.snapshot.queryParamMap.get('cadastro') === 'sucesso'
+      ? 'Cadastro realizado. Faça login para continuar.'
+      : '',
+  );
 
   login(): void {
   console.log('EMAIL:', this.email);

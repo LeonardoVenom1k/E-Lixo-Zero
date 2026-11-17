@@ -4,7 +4,6 @@ import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 import { AuthService } from '../../services/auth';
-import { User, UserCompat } from '../../models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -50,20 +49,11 @@ export class RegisterComponent {
         cpf: '' // CPF optional for now
       })
       .subscribe({
-        next: (user) => {
-          // Convert to compatible format
-          const userCompat: UserCompat = {
-            id: String(user.id),
-            name: user.fullName,
-            email: user.email,
-            password: user.password,
-            street: user.street,
-            number: user.number,
-            neighborhood: user.neighborhood,
-            city: user.city
-          };
-          localStorage.setItem('loggedInUser', JSON.stringify(userCompat));
-          this.router.navigate(['/dashboard']);
+        next: () => {
+          this.error.set('');
+          this.router.navigate(['/login'], {
+            queryParams: { cadastro: 'sucesso' },
+          });
         },
         error: () => {
           this.error.set('Erro ao cadastrar usuário.');
